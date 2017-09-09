@@ -8,15 +8,15 @@ Some people may prefer Haskell type names (e.g. Maybe instead of Option) or LINQ
 
 [![Build Status](https://travis-ci.org/bartsokol/Monacs.svg?branch=master)](https://travis-ci.org/bartsokol/Monacs)
 
-# Target platform and language versions
+## Target platform and language versions
 
 Currently the library is build against .NET 4.6.1 and .NET Standard 1.3. To use the library you need to have .NET 4.6.1+ or .NET Core 1.0+ project with C# language version 6 or higher.
 
-# Documentation
+## Documentation
 
 You can find [docs and samples here](docs/Index.md).
 
-# Want more?
+## Want more?
 
 If you're into functional programming and you're stuck in the .NET platform (or just like it) then you should definitely go with [F# programming language](http://fsharp.org/)!
 Not only most of what is provided by Monacs library is already there, but you also have much better defaults in the language (immutability anyone?).
@@ -24,20 +24,20 @@ There are also great libraries to go with Railway Oriented Programming like [Che
 
 If you really need to stick to C# and this library is not enough then you can try much more comprehensive library [Language Extensions](https://github.com/louthy/language-ext) - it probably has everything which this library covers and much, much more.
 
-# Status
+## Status
 
 It's currently work-in-progress, expect new things to be added, APIs to be changed and docs to be updated more or less often.
 I'll be doing my best
 
-# Contributing
+## Contributing
 
 If you've found any errors or missing functionalities in the provided library feel free to report an issue using GitHub.
 You can also contribute by sending pull requests with bug fixes or enhancments.
 
-# License
+## License
 
 This code is provided as is, without any warranties, as specified in [MIT license](LICENSE).
 
-# Contact me
+## Contact me
 
 You can reach me on Twitter - I'm [@bartsokol](https://twitter.com/bartsokol) there.
