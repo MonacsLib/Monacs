@@ -10,6 +10,6 @@ deploy:
   provider: script
   skip_cleanup: true
   script:
-    - cd Monacs.Core && dotnet pack Monacs.Core.nuspec -c Release -o . && dotnet nuget push Monacs.Core.nupkg -k $NUGET_API_KEY -v d
+    - cd Monacs.Core && dotnet pack Monacs.Core.csproj -c Release -o . && dotnet nuget push Monacs.Core.nupkg -k $NUGET_API_KEY -v d
   on:
     branch: master
