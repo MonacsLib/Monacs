@@ -17,4 +17,8 @@
       </group>
     </dependencies>
   </metadata>
+  <files>
+    <file src="bin\Release\netstandard1.3\*.*" target="lib\netstandard1.3\" />
+    <file src="bin\Release\net461\*.*" target="lib\net461\" />
+  </files>
 </package>
