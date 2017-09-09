@@ -2,6 +2,14 @@ language: csharp
 mono: latest
 dotnet: 2.0.0
 dist: trusty
+env: FrameworkPathOverride=/usr/lib/mono/4.5/
 script:
- - dotnet build
+ - dotnet build -c Release
  - dotnet test Monacs.UnitTests/Monacs.UnitTests.fsproj
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    - cd Monacs.Core && dotnet pack Monacs.Core.nuspec -c Release -o . && dotnet nuget push Monacs.Core.nupkg -k $NUGET_API_KEY -v d
+  on:
+    branch: master

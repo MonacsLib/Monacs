@@ -8,6 +8,10 @@ Some people may prefer Haskell type names (e.g. Maybe instead of Option) or LINQ
 
 [![Build Status](https://travis-ci.org/bartsokol/Monacs.svg?branch=master)](https://travis-ci.org/bartsokol/Monacs)
 
+# Target platform and language versions
+
+Currently the library is build against .NET 4.6.1 and .NET Standard 1.3. To use the library you need to have .NET 4.6.1+ or .NET Core 1.0+ project with C# language version 6 or higher.
+
 # Documentation
 
 You can find [docs and samples here](docs/Index.md).
