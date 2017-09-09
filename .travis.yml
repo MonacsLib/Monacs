@@ -5,11 +5,11 @@ dist: trusty
 env: FrameworkPathOverride=/usr/lib/mono/4.5/
 script:
  - dotnet build -c Release
- - dotnet test Monacs.UnitTests/Monacs.UnitTests.fsproj
+ - dotnet test Monacs.UnitTests/Monacs.UnitTests.fsproj --no-build
 deploy:
   provider: script
   skip_cleanup: true
   script:
-    - cd Monacs.Core && dotnet pack Monacs.Core.csproj -c Release -o . && dotnet nuget push Monacs.Core.nupkg -k $NUGET_API_KEY -v d
+    - cd Monacs.Core && dotnet pack Monacs.Core.csproj -c Release -o . && dotnet nuget push Monacs.Core.nupkg -k $NUGET_API_KEY
   on:
     branch: master
