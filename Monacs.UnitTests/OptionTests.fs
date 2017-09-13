@@ -88,3 +88,126 @@ module Match =
         let value = Option.Some(42)
         let expected = "test"
         Option.MatchTo(value, some = expected, none = "") |> should equal expected
+
+module Bind =
+
+    [<Fact>]
+    let ``Bind<T1, T2> returns result of binder when value is Some<T1>`` () =
+        let value = Option.Some(42)
+        let expected = Option.Some("42")
+        Option.Bind(value, (fun x -> Option.Some(x.ToString()))) |> should equal expected
+
+    [<Fact>]
+    let ``Bind<T1, T2> returns None<T2> when value is None<T1>`` () =
+        let value = Option.None<int>()
+        let expected = Option.None<string>()
+        Option.Bind(value, (fun x -> Option.Some(x.ToString()))) |> should equal expected
+    
+module Map =
+
+    [<Fact>]
+    let ``Map<T1, T2> returns result of mapper when value is Some<T1>`` () =
+        let value = Option.Some(42)
+        let expected = Option.Some("42")
+        Option.Map(value, (fun x -> x.ToString())) |> should equal expected
+
+    [<Fact>]
+    let ``Map<T1, T2> returns None<T2> when value is None<T1>`` () =
+        let value = Option.None<int>()
+        let expected = Option.None<string>()
+        Option.Map(value, (fun x -> x.ToString())) |> should equal expected
+
+module GetOrDefault =
+    
+    [<Fact>]
+    let ``GetOrDefault<T> returns encapsulated value when value is Some<T>`` () =
+        let value = Option.Some("test")
+        let expected = "test"
+        Option.GetOrDefault(value) |> should equal expected
+
+    [<Fact>]
+    let ``GetOrDefault<T> returns type default when value is None<T>`` () =
+        let value = Option.None<obj>()
+        let expected = null
+        Option.GetOrDefault(value) |> should equal expected
+
+    [<Fact>]
+    let ``GetOrDefault<T> returns given default when value is None<T>`` () =
+        let value = Option.None<string>()
+        let expected = "test"
+        Option.GetOrDefault(value, whenNone = expected) |> should equal expected
+    
+    [<Fact>]
+    let ``GetOrDefault<T1, T2> returns getter result when value is Some<T1>`` () =
+        let value = Option.Some((1, "test"))
+        let expected = "test"
+        Option.GetOrDefault(value, fun (_, x) -> x) |> should equal expected
+
+    [<Fact>]
+    let ``GetOrDefault<T1, T2> returns type default when value is None<T1>`` () =
+        let value = Option.None<obj>()
+        let expected = 0
+        Option.GetOrDefault(value, getter = (fun x -> x.GetHashCode())) |> should equal expected
+
+    [<Fact>]
+    let ``GetOrDefault<T1, T2> returns given default when value is None<T1>`` () =
+        let value = Option.None<string>()
+        let expected = 42
+        Option.GetOrDefault(value, getter = (fun x -> x.GetHashCode()), whenNone = expected) |> should equal expected
+
+module ``Side effects`` =
+
+    [<Fact>]
+    let ``Do<T> returns value and executes action when value is Some<T>`` () =
+        let value = Option.Some(42)
+        let expected = "42"
+        let mutable result = ""
+        Option.Do(value, (fun x -> result <- expected.ToString())) |> should equal value
+        result |> should equal expected
+
+    [<Fact>]
+    let ``Do<T> returns value and doesn't execute action when value is None<T>`` () =
+        let value = Option.None<int>()
+        let expected = "test"
+        let mutable result = expected
+        Option.Do(value, (fun x -> result <- "fail")) |> should equal value
+        result |> should equal expected
+    
+    [<Fact>]
+    let ``DoWhenNone<T> returns value and doesn't execute action when value is Some<T>`` () =
+        let value = Option.Some(42)
+        let expected = "test"
+        let mutable result = expected
+        Option.DoWhenNone(value, (fun x -> result <- "fail")) |> should equal value
+        result |> should equal expected
+
+    [<Fact>]
+    let ``Do<T> returns value and executes action when value is None<T>`` () =
+        let value = Option.None<int>()
+        let expected = "42"
+        let mutable result = ""
+        Option.DoWhenNone(value, (fun x -> result <- expected.ToString())) |> should equal value
+        result |> should equal expected
+
+module Collections =
+
+    [<Fact>]
+    let ``Choose<T> returns collection of values of items which are not None<T>`` () =
+        let values = seq { yield Option.Some(42); yield Option.None<int>(); yield Option.Some(123) }
+        let expected = [| 42; 123 |]
+        Option.Choose(values) |> Seq.toArray |> should equal expected
+    
+    [<Fact>]
+    let ``Choose<T> returns collection of values wrapped into Option when all items are not None<T>`` () =
+        let values = seq { yield Option.Some(42); yield Option.Some(123) }
+        let expected = [| 42; 123 |]
+        let result = Option.Sequence(values)
+        result.IsSome |> should equal true
+        result.Value |> Seq.toArray |> should equal expected
+    
+    [<Fact>]
+    let ``Choose<T> returns None<IEnumerable<T>> when any item is None<T>`` () =
+        let values = seq { yield Option.Some(42); yield Option.Some(123); yield Option.None<int>() }
+        let expected = Option.None<int seq>()
+        Option.Sequence(values) |> should equal expected
+    
