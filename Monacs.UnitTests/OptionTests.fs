@@ -37,7 +37,7 @@ module Converters =
 
     [<Fact>]
     let ``OfObject<T> returns Some<T> when value is not null`` () =
-        let object = System.Object
+        let object = obj()
         Option.OfObject(object) |> should equal (Option.Some(object))
     
     [<Fact>]
@@ -193,12 +193,12 @@ module Collections =
 
     [<Fact>]
     let ``Choose<T> returns collection of values of items which are not None<T>`` () =
-        let values = seq { yield Option.Some(42); yield Option.None<int>(); yield Option.Some(123) }
+        let values = seq { yield Option.Some(42); yield Option.None(); yield Option.Some(123) }
         let expected = [| 42; 123 |]
         Option.Choose(values) |> Seq.toArray |> should equal expected
     
     [<Fact>]
-    let ``Choose<T> returns collection of values wrapped into Option when all items are not None<T>`` () =
+    let ``Sequence<T> returns collection of values wrapped into Option when all items are not None<T>`` () =
         let values = seq { yield Option.Some(42); yield Option.Some(123) }
         let expected = [| 42; 123 |]
         let result = Option.Sequence(values)
@@ -206,8 +206,7 @@ module Collections =
         result.Value |> Seq.toArray |> should equal expected
     
     [<Fact>]
-    let ``Choose<T> returns None<IEnumerable<T>> when any item is None<T>`` () =
-        let values = seq { yield Option.Some(42); yield Option.Some(123); yield Option.None<int>() }
+    let ``Sequence<T> returns None<IEnumerable<T>> when any item is None<T>`` () =
+        let values = seq { yield Option.Some(42); yield Option.Some(123); yield Option.None() }
         let expected = Option.None<int seq>()
         Option.Sequence(values) |> should equal expected
-    
