@@ -39,7 +39,7 @@ module Converters =
     let ``OfObject<T> returns Some<T> when value is not null`` () =
         let object = obj()
         Option.OfObject(object) |> should equal (Option.Some(object))
-    
+
     [<Fact>]
     let ``OfNullable<T> returns None<T> when value is null`` () =
         let empty = new Nullable<int>()
@@ -49,11 +49,11 @@ module Converters =
     let ``OfNullable<T> returns Some<T> when value is not null`` () =
         let value = Nullable(42)
         Option.OfNullable(value) |> should equal (Option.Some(value.Value))
-    
+
     [<Fact>]
     let ``OfString<T> returns None<T> when value is null`` () =
         Option.OfString(null) |> should equal (Option.None<string>())
-    
+
     [<Fact>]
     let ``OfString<T> returns None<T> when value is empty`` () =
         Option.OfString("") |> should equal (Option.None<string>())
@@ -70,19 +70,19 @@ module Match =
         let value = Option.None<int>()
         let expected = "test"
         Option.Match(value, some = (fun _ -> ""), none = (fun () -> expected)) |> should equal expected
-        
+
     [<Fact>]
     let ``Match<T1, T2> returns result of some when value is Some<T1>`` () =
         let value = Option.Some(42)
         let expected = "test"
         Option.Match(value, some = (fun _ -> expected), none = (fun () -> "")) |> should equal expected
-    
+
     [<Fact>]
     let ``MatchTo<T1, T2> returns result of none when value is None<T1>`` () =
         let value = Option.None<int>()
         let expected = "test"
         Option.MatchTo(value, some = "", none = expected) |> should equal expected
-        
+
     [<Fact>]
     let ``MatchTo<T1, T2> returns result of some when value is Some<T1>`` () =
         let value = Option.Some(42)
@@ -102,7 +102,7 @@ module Bind =
         let value = Option.None<int>()
         let expected = Option.None<string>()
         Option.Bind(value, (fun x -> Option.Some(x.ToString()))) |> should equal expected
-    
+
 module Map =
 
     [<Fact>]
@@ -118,7 +118,7 @@ module Map =
         Option.Map(value, (fun x -> x.ToString())) |> should equal expected
 
 module GetOrDefault =
-    
+
     [<Fact>]
     let ``GetOrDefault<T> returns encapsulated value when value is Some<T>`` () =
         let value = Option.Some("test")
@@ -136,7 +136,7 @@ module GetOrDefault =
         let value = Option.None<string>()
         let expected = "test"
         Option.GetOrDefault(value, whenNone = expected) |> should equal expected
-    
+
     [<Fact>]
     let ``GetOrDefault<T1, T2> returns getter result when value is Some<T1>`` () =
         let value = Option.Some((1, "test"))
@@ -172,7 +172,7 @@ module ``Side effects`` =
         let mutable result = expected
         Option.Do(value, (fun x -> result <- "fail")) |> should equal value
         result |> should equal expected
-    
+
     [<Fact>]
     let ``DoWhenNone<T> returns value and doesn't execute action when value is Some<T>`` () =
         let value = Option.Some(42)
@@ -196,7 +196,7 @@ module Collections =
         let values = seq { yield Option.Some(42); yield Option.None(); yield Option.Some(123) }
         let expected = [| 42; 123 |]
         Option.Choose(values) |> Seq.toArray |> should equal expected
-    
+
     [<Fact>]
     let ``Sequence<T> returns collection of values wrapped into Option when all items are not None<T>`` () =
         let values = seq { yield Option.Some(42); yield Option.Some(123) }
@@ -204,7 +204,7 @@ module Collections =
         let result = Option.Sequence(values)
         result.IsSome |> should equal true
         result.Value |> Seq.toArray |> should equal expected
-    
+
     [<Fact>]
     let ``Sequence<T> returns None<IEnumerable<T>> when any item is None<T>`` () =
         let values = seq { yield Option.Some(42); yield Option.Some(123); yield Option.None() }

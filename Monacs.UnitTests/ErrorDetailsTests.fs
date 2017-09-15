@@ -29,7 +29,7 @@ module Constructors =
         details.Message |> should equal (Option.Some(message))
         details.Key |> should equal (Option.Some(key))
         details.Exception |> should equal (Option.Some(ex))
-    
+
     [<Fact>]
     let ``Info sets ErrorLevel.Info and error details`` () =
         let message = "Message"
@@ -40,7 +40,7 @@ module Constructors =
         details.Message |> should equal (Option.Some(message))
         details.Key |> should equal (Option.Some(key))
         details.Exception |> should equal (Option.Some(ex))
-    
+
     [<Fact>]
     let ``Warn sets ErrorLevel.Warn and error details`` () =
         let message = "Message"
@@ -72,4 +72,4 @@ module Constructors =
         details.Level |> should equal ErrorLevel.Fatal
         details.Message |> should equal (Option.Some(message))
         details.Key |> should equal (Option.Some(key))
-        details.Exception |> should equal (Option.Some(ex))        
+        details.Exception |> should equal (Option.Some(ex))

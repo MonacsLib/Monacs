@@ -18,13 +18,13 @@ module ``Constructors and equality`` =
     let ``Ok<T> doesn't equal Ok<T> when the Value is not equal`` () =
         Result.Ok(42) = Result.Ok(13) |> should equal false
         Result.Ok(42) <> Result.Ok(13) |> should equal true
-    
+
     [<Fact>]
     let ``Error<T> equals Error<T> when the Error is equal`` () =
         let error = Errors.Error()
         Result.Error<string>(error) = Result.Error<string>(error) |> should equal true
         Result.Error<string>(error) <> Result.Error<string>(error) |> should equal false
-    
+
     [<Fact>]
     let ``Error<T> doesn't equal Error<T> when the Error is not equal`` () =
         let error1 = Errors.Error("test1")
@@ -50,7 +50,7 @@ module Converters =
     let ``OfObject<T> returns Ok<T> when value is not null`` () =
         let object = obj()
         Result.OfObject(object, Errors.Error()) |> should equal (Result.Ok(object))
-    
+
     [<Fact>]
     let ``OfNullable<T> returns Error<T> when value is null`` () =
         let empty = new Nullable<int>()
@@ -61,12 +61,12 @@ module Converters =
     let ``OfNullable<T> returns Ok<T> when value is not null`` () =
         let value = Nullable(42)
         Result.OfNullable(value, Errors.Error()) |> should equal (Result.Ok(value.Value))
-    
+
     [<Fact>]
     let ``OfString<T> returns Error<T> when value is null`` () =
         let error = Errors.Error()
         Result.OfString(null, error) |> should equal (Result.Error<string>(error))
-    
+
     [<Fact>]
     let ``OfString<T> returns Error<T> when value is empty`` () =
         let error = Errors.Error()
@@ -85,19 +85,19 @@ module Match =
         let error = Errors.Error(expected)
         let value = Result.Error<int>(error)
         Result.Match(value, ok = (fun _ -> ""), error = (fun e -> e.Message.Value)) |> should equal expected
-        
+
     [<Fact>]
     let ``Match<T1, T2> returns result of ok when value is Ok<T1>`` () =
         let value = Result.Ok(42)
         let expected = "test"
         Result.Match(value, ok = (fun _ -> expected), error = (fun _ -> "")) |> should equal expected
-    
+
     [<Fact>]
     let ``MatchTo<T1, T2> returns result of error when value is Error<T1>`` () =
         let expected = "test"
         let value = Result.Error<int>(Errors.Error())
         Result.MatchTo(value, ok = "", error = expected) |> should equal expected
-        
+
     [<Fact>]
     let ``MatchTo<T1, T2> returns result of ok when value is Ok<T1>`` () =
         let value = Result.Ok(42)
@@ -118,7 +118,7 @@ module Bind =
         let value = Result.Error<int>(error)
         let expected = Result.Error<string>(error)
         Result.Bind(value, (fun x -> Result.Ok(x.ToString()))) |> should equal expected
-    
+
 module Map =
 
     [<Fact>]
@@ -135,7 +135,7 @@ module Map =
         Result.Map(value, (fun x -> x.ToString())) |> should equal expected
 
 module GetOrDefault =
-    
+
     [<Fact>]
     let ``GetOrDefault<T> returns encapsulated value when value is Ok<T>`` () =
         let value = Result.Ok("test")
@@ -153,7 +153,7 @@ module GetOrDefault =
         let value = Result.Error<string>(Errors.Error())
         let expected = "test"
         Result.GetOrDefault(value, whenError = expected) |> should equal expected
-    
+
     [<Fact>]
     let ``GetOrDefault<T1, T2> returns getter result when value is Ok<T1>`` () =
         let value = Result.Ok((1, "test"))
@@ -189,7 +189,7 @@ module ``Side effects`` =
         let mutable result = expected
         Result.Do(value, (fun x -> result <- "fail")) |> should equal value
         result |> should equal expected
-    
+
     [<Fact>]
     let ``DoWhenError<T> returns value and doesn't execute action when value is Ok<T>`` () =
         let value = Result.Ok(42)
@@ -213,7 +213,7 @@ module Collections =
         let values = seq { yield Result.Ok(42); yield Result.Error(Errors.Error()); yield Result.Ok(123) }
         let expected = [| 42; 123 |]
         Result.Choose(values) |> Seq.toArray |> should equal expected
-    
+
     [<Fact>]
     let ``Sequence<T> returns collection of values wrapped into Result when all items are not Error<T>`` () =
         let values = seq { yield Result.Ok(42); yield Result.Ok(123) }
@@ -221,7 +221,7 @@ module Collections =
         let result = Result.Sequence(values)
         result.IsOk |> should equal true
         result.Value |> Seq.toArray |> should equal expected
-    
+
     [<Fact>]
     let ``Sequence<T> returns Error<IEnumerable<T>> with first error when any item is Error<T>`` () =
         let error = Errors.Error("error!")

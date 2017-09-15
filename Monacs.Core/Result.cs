@@ -81,7 +81,7 @@ namespace Monacs.Core
 
         public static T2 Match<T1, T2>(this Result<T1> result, Func<T1, T2> ok, Func<ErrorDetails, T2> error) =>
             result.IsOk ? ok(result.Value) : error(result.Error);
-        
+
         public static T2 MatchTo<T1, T2>(this Result<T1> result, T2 ok, T2 error) =>
             result.IsOk ? ok : error;
 
@@ -102,7 +102,7 @@ namespace Monacs.Core
 
         public static T2 GetOrDefault<T1, T2>(this Result<T1> result, Func<T1, T2> getter, T2 whenError = default(T2)) =>
             result.IsOk ? getter(result.Value) : whenError;
-        
+
         /* Side Effects */
 
         public static Result<T> Do<T>(this Result<T> result, Action<T> action)
@@ -123,7 +123,7 @@ namespace Monacs.Core
 
         public static IEnumerable<T> Choose<T>(this IEnumerable<Result<T>> items) =>
             items.Where(i => i.IsOk).Select(i => i.Value);
-        
+
         public static Result<IEnumerable<T>> Sequence<T>(this IEnumerable<Result<T>> items) =>
             items.Any(i => i.IsError)
             ? Error<IEnumerable<T>>(items.First(i => i.IsError).Error)

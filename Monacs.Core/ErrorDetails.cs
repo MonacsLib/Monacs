@@ -35,7 +35,7 @@ namespace Monacs.Core
     {
         public static ErrorDetails Trace(string message = null, string key = null, Exception exception = null) =>
             new ErrorDetails(ErrorLevel.Trace, message.ToOption(), key.ToOption(), exception.ToOption());
-        
+
         public static ErrorDetails Debug(string message = null, string key = null, Exception exception = null) =>
             new ErrorDetails(ErrorLevel.Debug, message.ToOption(), key.ToOption(), exception.ToOption());
 

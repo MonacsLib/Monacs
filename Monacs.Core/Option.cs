@@ -70,7 +70,7 @@ namespace Monacs.Core
 
         public static T2 Match<T1, T2>(this Option<T1> option, Func<T1, T2> some, Func<T2> none) =>
             option.IsSome ? some(option.Value) : none();
-        
+
         public static T2 MatchTo<T1, T2>(this Option<T1> option, T2 some, T2 none) =>
             option.IsSome ? some : none;
 
@@ -91,7 +91,7 @@ namespace Monacs.Core
 
         public static T2 GetOrDefault<T1, T2>(this Option<T1> option, Func<T1, T2> getter, T2 whenNone = default(T2)) =>
             option.IsSome ? getter(option.Value) : whenNone;
-        
+
         /* Side Effects */
 
         public static Option<T> Do<T>(this Option<T> option, Action<T> action)
@@ -112,7 +112,7 @@ namespace Monacs.Core
 
         public static IEnumerable<T> Choose<T>(this IEnumerable<Option<T>> items) =>
             items.Where(i => i.IsSome).Select(i => i.Value);
-        
+
         public static Option<IEnumerable<T>> Sequence<T>(this IEnumerable<Option<T>> items) =>
             items.Any(i => i.IsNone)
             ? None<IEnumerable<T>>()
