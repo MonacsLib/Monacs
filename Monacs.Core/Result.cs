@@ -9,11 +9,11 @@ namespace Monacs.Core
         internal Result(T value)
         {
             Value = value;
-            Error = default(Error);
+            Error = default(ErrorDetails);
             IsOk = true;
         }
 
-        internal Result(Error error)
+        internal Result(ErrorDetails error)
         {
             Value = default(T);
             Error = error;
@@ -22,7 +22,7 @@ namespace Monacs.Core
 
         public T Value { get; }
 
-        public Error Error { get; }
+        public ErrorDetails Error { get; }
 
         public bool IsOk { get; }
 
@@ -58,28 +58,28 @@ namespace Monacs.Core
 
         public static Result<T> Ok<T>(T value) => new Result<T>(value);
 
-        public static Result<T> Error<T>(Error error) => new Result<T>(error);
+        public static Result<T> Error<T>(ErrorDetails error) => new Result<T>(error);
 
         /* Converters */
 
-        public static Result<T> OfObject<T>(T value, Error error) where T : class =>
+        public static Result<T> OfObject<T>(T value, ErrorDetails error) where T : class =>
             value != null ? Ok(value) : Error<T>(error);
 
-        public static Result<T> ToResult<T>(this T value, Error error) where T : class => OfObject(value, error);
+        public static Result<T> ToResult<T>(this T value, ErrorDetails error) where T : class => OfObject(value, error);
 
-        public static Result<T> OfNullable<T>(T? value, Error error) where T : struct =>
+        public static Result<T> OfNullable<T>(T? value, ErrorDetails error) where T : struct =>
             value.HasValue ? Ok(value.Value) : Error<T>(error);
 
-        public static Result<T> ToResult<T>(this T? value, Error error) where T : struct => OfNullable(value, error);
+        public static Result<T> ToResult<T>(this T? value, ErrorDetails error) where T : struct => OfNullable(value, error);
 
-        public static Result<string> OfString(string value, Error error) =>
+        public static Result<string> OfString(string value, ErrorDetails error) =>
             string.IsNullOrEmpty(value) ? Error<string>(error) : Ok(value);
 
-        public static Result<string> ToResult(this string value, Error error) => OfString(value, error);
+        public static Result<string> ToResult(this string value, ErrorDetails error) => OfString(value, error);
 
         /* Match */
 
-        public static T2 Match<T1, T2>(this Result<T1> result, Func<T1, T2> ok, Func<Error, T2> error) =>
+        public static T2 Match<T1, T2>(this Result<T1> result, Func<T1, T2> ok, Func<ErrorDetails, T2> error) =>
             result.IsOk ? ok(result.Value) : error(result.Error);
         
         public static T2 MatchTo<T1, T2>(this Result<T1> result, T2 ok, T2 error) =>
@@ -112,7 +112,7 @@ namespace Monacs.Core
             return result;
         }
 
-        public static Result<T> DoWhenError<T>(this Result<T> result, Action<Error> action)
+        public static Result<T> DoWhenError<T>(this Result<T> result, Action<ErrorDetails> action)
         {
             if (result.IsError)
                 action(result.Error);

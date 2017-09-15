@@ -21,7 +21,7 @@ module ``Constructors and equality`` =
     
     [<Fact>]
     let ``Error<T> equals Error<T> when the Error is equal`` () =
-        let error = new Error()
+        let error = Errors.Error()
         Result.Error<string>(error) = Result.Error<string>(error) |> should equal true
         Result.Error<string>(error) <> Result.Error<string>(error) |> should equal false
     
