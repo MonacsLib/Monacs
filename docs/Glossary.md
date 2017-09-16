@@ -1,10 +1,8 @@
-# Getting started
-
-Monacs is a library that provides a set of types and functions that can be used to substantialy change the approach you use to write your C# code. And while it won't change object-oriented language into fully-featured functional language, it gives you oportunity to use some of the FP concepts in your C# code today.
+# Glossary
 
 To fully leverage the potential of this library, you'll need to get familiar with a few simple concepts. Once you get through them, everything about this library should be pretty obvious.
 
-## Don't fear the monad
+## (Don't fear the) Monad
 The M Word. It's been a topic of countless discussions, jokes and even flamewars. You can look at the monad from many perspectives, but the perspective this library encourages is pretty simple: Monad is a combination of a type (e.g. Option) and a collection of functions around this type (like Map and Bind).
 
 Actually, as a .NET developer you've probably used at least a couple of monads. `IEnumerable<T>` with LINQ is actually a monad. TPL and async/await workflow is a monad as well. And if you had chance to use Reactive Extensions and `IObservable<T>` type, then yes, it's a proper monad too.
@@ -20,13 +18,13 @@ As you may know, there are two kinds of types in C# - reference types, such as `
 ## The power of extension methods
 One of the most important features of C# that allowed to build this library is extension methods. Having the possibility to extend any type with additional methods from virtually any place gives us the flexibility to build modular fluent APIs around simple types.
 
-## Leveraging `using static` imports
+## `using static` imports
 There is one particular feature of C# language that can significantly reduce the amount of code you have to write when you use the same static class multiple times. Take a look at an example:
 
     namespace Monacs.Samples
     {
         using System;
-        
+
         public class Sample1
         {
             TODO
