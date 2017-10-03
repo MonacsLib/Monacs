@@ -52,6 +52,16 @@ module Converters =
         Result.OfObject(object, Errors.Error()) |> should equal (Result.Ok(object))
 
     [<Fact>]
+    let ``OfObject<T> with func returns Error<T> when value is null`` () =
+        let error = Errors.Error()
+        Result.OfObject<System.Object>(null, (fun () -> error)) |> should equal (Result.Error<System.Object>(error))
+
+    [<Fact>]
+    let ``OfObject<T> with func returns Ok<T> when value is not null`` () =
+        let object = obj()
+        Result.OfObject(object, (fun () -> Errors.Error())) |> should equal (Result.Ok(object))
+
+    [<Fact>]
     let ``OfNullable<T> returns Error<T> when value is null`` () =
         let empty = new Nullable<int>()
         let error = Errors.Error()
@@ -61,6 +71,17 @@ module Converters =
     let ``OfNullable<T> returns Ok<T> when value is not null`` () =
         let value = Nullable(42)
         Result.OfNullable(value, Errors.Error()) |> should equal (Result.Ok(value.Value))
+
+    [<Fact>]
+    let ``OfNullable<T> with func returns Error<T> when value is null`` () =
+        let empty = new Nullable<int>()
+        let error = Errors.Error()
+        Result.OfNullable<int>(empty, (fun () -> error)) |> should equal (Result.Error<int>(error))
+
+    [<Fact>]
+    let ``OfNullable<T> with func returns Ok<T> when value is not null`` () =
+        let value = Nullable(42)
+        Result.OfNullable(value, (fun () -> Errors.Error())) |> should equal (Result.Ok(value.Value))
 
     [<Fact>]
     let ``OfString<T> returns Error<T> when value is null`` () =
@@ -76,6 +97,21 @@ module Converters =
     let ``OfString<T> returns Ok<T> when value is not null and not empty`` () =
         let value = "test"
         Result.OfString(value, Errors.Error()) |> should equal (Result.Ok(value))
+
+    [<Fact>]
+    let ``OfString<T> with func returns Error<T> when value is null`` () =
+        let error = Errors.Error()
+        Result.OfString(null, (fun () -> error)) |> should equal (Result.Error<string>(error))
+
+    [<Fact>]
+    let ``OfString<T> with func returns Error<T> when value is empty`` () =
+        let error = Errors.Error()
+        Result.OfString("", (fun () -> error)) |> should equal (Result.Error<string>(error))
+
+    [<Fact>]
+    let ``OfString<T> with func returns Ok<T> when value is not null and not empty`` () =
+        let value = "test"
+        Result.OfString(value, (fun () -> Errors.Error())) |> should equal (Result.Ok(value))
 
 module Match =
 

@@ -65,17 +65,32 @@ namespace Monacs.Core
         public static Result<T> OfObject<T>(T value, ErrorDetails error) where T : class =>
             value != null ? Ok(value) : Error<T>(error);
 
+        public static Result<T> OfObject<T>(T value, Func<ErrorDetails> errorFunc) where T : class =>
+            value != null ? Ok(value) : Error<T>(errorFunc());
+
         public static Result<T> ToResult<T>(this T value, ErrorDetails error) where T : class => OfObject(value, error);
+
+        public static Result<T> ToResult<T>(this T value, Func<ErrorDetails> errorFunc) where T : class => OfObject(value, errorFunc);
 
         public static Result<T> OfNullable<T>(T? value, ErrorDetails error) where T : struct =>
             value.HasValue ? Ok(value.Value) : Error<T>(error);
 
+        public static Result<T> OfNullable<T>(T? value, Func<ErrorDetails> errorFunc) where T : struct =>
+            value.HasValue ? Ok(value.Value) : Error<T>(errorFunc());
+
         public static Result<T> ToResult<T>(this T? value, ErrorDetails error) where T : struct => OfNullable(value, error);
+
+        public static Result<T> ToResult<T>(this T? value, Func<ErrorDetails> errorFunc) where T : struct => OfNullable(value, errorFunc);
 
         public static Result<string> OfString(string value, ErrorDetails error) =>
             string.IsNullOrEmpty(value) ? Error<string>(error) : Ok(value);
 
+        public static Result<string> OfString(string value, Func<ErrorDetails> errorFunc) =>
+            string.IsNullOrEmpty(value) ? Error<string>(errorFunc()) : Ok(value);
+
         public static Result<string> ToResult(this string value, ErrorDetails error) => OfString(value, error);
+
+        public static Result<string> ToResult(this string value, Func<ErrorDetails> errorFunc) => OfString(value, errorFunc);
 
         /* Match */
 
