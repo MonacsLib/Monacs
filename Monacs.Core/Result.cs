@@ -92,6 +92,16 @@ namespace Monacs.Core
 
         public static Result<string> ToResult(this string value, Func<ErrorDetails> errorFunc) => OfString(value, errorFunc);
 
+        public static Result<T> OfOption<T>(Option<T> value, ErrorDetails error) where T : struct =>
+            value.IsSome ? Ok(value.Value) : Error<T>(error);
+
+        public static Result<T> OfOption<T>(Option<T> value, Func<ErrorDetails> errorFunc) where T : struct =>
+            value.IsSome ? Ok(value.Value) : Error<T>(errorFunc());
+
+        public static Result<T> ToResult<T>(this Option<T> value, ErrorDetails error) where T : struct => OfOption(value, error);
+
+        public static Result<T> ToResult<T>(this Option<T> value, Func<ErrorDetails> errorFunc) where T : struct => OfOption(value, errorFunc);
+
         /* Match */
 
         public static T2 Match<T1, T2>(this Result<T1> result, Func<T1, T2> ok, Func<ErrorDetails, T2> error) =>

@@ -113,6 +113,28 @@ module Converters =
         let value = "test"
         Result.OfString(value, (fun () -> Errors.Error())) |> should equal (Result.Ok(value))
 
+    [<Fact>]
+    let ``OfOption<T> returns Error<T> when value is None`` () =
+        let empty = Option.None<int>()
+        let error = Errors.Error()
+        Result.OfOption<int>(empty, error) |> should equal (Result.Error<int>(error))
+
+    [<Fact>]
+    let ``OfOption<T> returns Ok<T> when value is Some`` () =
+        let value = Option.Some(42)
+        Result.OfOption(value, Errors.Error()) |> should equal (Result.Ok(value.Value))
+
+    [<Fact>]
+    let ``OfOption<T> with func returns Error<T> when value is None`` () =
+        let empty = Option.None<int>()
+        let error = Errors.Error()
+        Result.OfOption<int>(empty, (fun () -> error)) |> should equal (Result.Error<int>(error))
+
+    [<Fact>]
+    let ``OfOption<T> with func returns Ok<T> when value is Some`` () =
+        let value = Option.Some(42)
+        Result.OfOption(value, (fun () -> Errors.Error())) |> should equal (Result.Ok(value.Value))
+
 module Match =
 
     [<Fact>]
