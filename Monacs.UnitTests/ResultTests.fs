@@ -273,6 +273,12 @@ module Collections =
         Result.Choose(values) |> Seq.toArray |> should equal expected
 
     [<Fact>]
+    let ``ChooseErrors<T> returns collection of errors from items which are Error<T>`` () =
+        let expected = [| Errors.Error("1"); Errors.Info("2") |]
+        let values = seq { yield Result.Ok(42); yield Result.Error(expected.[0]); yield Result.Ok(123); yield Result.Error(expected.[1]); }
+        Result.ChooseErrors(values) |> Seq.toArray |> should equal expected
+
+    [<Fact>]
     let ``Sequence<T> returns collection of values wrapped into Result when all items are not Error<T>`` () =
         let values = seq { yield Result.Ok(42); yield Result.Ok(123) }
         let expected = [| 42; 123 |]

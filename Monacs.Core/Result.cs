@@ -149,6 +149,9 @@ namespace Monacs.Core
         public static IEnumerable<T> Choose<T>(this IEnumerable<Result<T>> items) =>
             items.Where(i => i.IsOk).Select(i => i.Value);
 
+        public static IEnumerable<ErrorDetails> ChooseErrors<T>(this IEnumerable<Result<T>> items) =>
+            items.Where(r => r.IsError).Select(x => x.Error);
+
         public static Result<IEnumerable<T>> Sequence<T>(this IEnumerable<Result<T>> items) =>
             items.Any(i => i.IsError)
             ? Error<IEnumerable<T>>(items.First(i => i.IsError).Error)
