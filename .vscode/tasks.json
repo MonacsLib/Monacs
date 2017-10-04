@@ -13,7 +13,7 @@
         },
         {
             "taskName": "test",
-            "command": "dotnet test",
+            "command": "dotnet test ./Monacs.UnitTests/Monacs.UnitTests.fsproj",
             "type": "shell",
             "group": "build",
             "presentation": {

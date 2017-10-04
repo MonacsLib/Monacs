@@ -34,16 +34,21 @@ namespace Monacs.Core
             : $"Error<{typeof(T).Name}>({Error})";
 
         public bool Equals(Result<T> other) =>
-            (IsError && other.IsError && Equals(Error, other.Error))
-            || (IsOk && other.IsOk && Equals(Value, other.Value));
+            (IsError && other.IsError && EqualityComparer<ErrorDetails>.Default.Equals(Error, other.Error))
+            || (IsOk && other.IsOk && EqualityComparer<T>.Default.Equals(Value, other.Value));
 
         public override bool Equals(object obj) =>
             obj is Result<T> && Equals((Result<T>)obj);
 
-        public override int GetHashCode() =>
-            IsError
-            ? Error.GetHashCode()
-            : Value == null ? base.GetHashCode() : Value.GetHashCode();
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return IsError
+                ? Error.GetHashCode() ^ 13
+                : Value == null ? base.GetHashCode() ^ 29 : Value.GetHashCode() ^ 31;
+            }
+        }
 
         public static bool operator ==(Result<T> a, Result<T> b) =>
             a.Equals(b);

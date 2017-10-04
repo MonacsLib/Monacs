@@ -9,6 +9,30 @@ open Monacs.Core
 module ``Constructors and equality`` =
 
     [<Fact>]
+    let ``Some<T> equals itself`` () =
+        let opt = Option.Some("test")
+        opt = opt |> should equal true
+        opt <> opt |> should equal false
+
+    [<Fact>]
+    let ``Some<T> doesn't equal null`` () =
+        let opt = box (Option.Some("test"))
+        opt = null |> should equal false
+        opt <> null |> should equal true
+
+    [<Fact>]
+    let ``None<T> equals itself`` () =
+        let opt = Option.None<string>()
+        opt = opt |> should equal true
+        opt <> opt |> should equal false
+
+    [<Fact>]
+    let ``None<T> doesn't equal null`` () =
+        let opt = box (Option.None<string>())
+        opt = null |> should equal false
+        opt <> null |> should equal true
+
+    [<Fact>]
     let ``None<T> equals None<T>`` () =
         Option.None<string>() = Option.None<string>() |> should equal true
         Option.None<string>() <> Option.None<string>() |> should equal false

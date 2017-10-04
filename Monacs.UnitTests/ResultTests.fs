@@ -9,6 +9,30 @@ open Monacs.Core
 module ``Constructors and equality`` =
 
     [<Fact>]
+    let ``Ok<T> equals itself`` () =
+        let result = Result.Ok("test")
+        result = result |> should equal true
+        result <> result |> should equal false
+
+    [<Fact>]
+    let ``Ok<T> doesn't equal null`` () =
+        let result = box (Result.Ok("test"))
+        result = null |> should equal false
+        result <> null |> should equal true
+
+    [<Fact>]
+    let ``Error<T> equals itself`` () =
+        let result = Result.Error(Errors.Debug("test"))
+        result = result |> should equal true
+        result <> result |> should equal false
+
+    [<Fact>]
+    let ``Error<T> doesn't equal null`` () =
+        let result = box (Result.Error(Errors.Debug("test")))
+        result = null |> should equal false
+        result <> null |> should equal true
+
+    [<Fact>]
     let ``Ok<T> equals Ok<T> when the Value is equal`` () =
         let value = "test"
         Result.Ok(value) = Result.Ok(value) |> should equal true
