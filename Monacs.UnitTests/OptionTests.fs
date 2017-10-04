@@ -75,6 +75,16 @@ module Converters =
         Option.OfNullable(value) |> should equal (Option.Some(value.Value))
 
     [<Fact>]
+    let ``OfResult<T> returns None<T> when value Error<T>`` () =
+        let error = Result.Error<int>(Errors.Info())
+        Option.OfResult<int>(error) |> should equal (Option.None<int>())
+
+    [<Fact>]
+    let ``OfResult<T> returns Some<T> when value is Ok<T>`` () =
+        let result = Result.Ok(42)
+        Option.OfResult(result) |> should equal (Option.Some(result.Value))
+
+    [<Fact>]
     let ``OfString<T> returns None<T> when value is null`` () =
         Option.OfString(null) |> should equal (Option.None<string>())
 

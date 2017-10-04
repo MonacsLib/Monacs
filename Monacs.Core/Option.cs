@@ -86,6 +86,11 @@ namespace Monacs.Core
 
         public static Option<string> ToOption(this string value) => OfString(value);
 
+        public static Option<T> OfResult<T>(Result<T> value) where T : struct =>
+            value.IsOk ? Some(value.Value) : None<T>();
+
+        public static Option<T> ToOption<T>(this Result<T> value) where T : struct => OfResult(value);
+
         /* Match */
 
         public static T2 Match<T1, T2>(this Option<T1> option, Func<T1, T2> some, Func<T2> none) =>
