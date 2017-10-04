@@ -81,6 +81,9 @@ namespace Monacs.Core
 
         public static Option<T> ToOption<T>(this T? value) where T : struct => OfNullable(value);
 
+        public static T? ToNullable<T>(Option<T> value) where T : struct =>
+            value.IsSome ? value.Value : (T?)null;
+
         public static Option<string> OfString(string value) =>
             string.IsNullOrEmpty(value) ? None<string>() : Some(value);
 
