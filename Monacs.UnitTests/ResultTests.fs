@@ -380,3 +380,34 @@ module Collections =
         let values = seq { yield Result.Ok(42); yield Result.Error(error); yield Result.Error(Errors.Error()) }
         let expected = Result.Error<int seq>(error)
         Result.Sequence(values) |> should equal expected
+
+module TryCatch =
+
+    [<Fact>]
+    let ``TryCatch<T> returns Ok<T> when function call doesn't throw`` () =
+        let value = 42
+        Result.TryCatch((fun () -> value), (fun _ -> Errors.Error())) |> should equal (Result.Ok(value))
+
+    [<Fact>]
+    let ``TryCatch<T> returns Error<T> when function call throws`` () =
+        let message = "This should not happen!"
+        Result.TryCatch((fun () -> raise(Exception(message))), (fun e -> Errors.Error(e.Message))) |> should equal (Result.Error(Errors.Error(message)))
+
+    [<Fact>]
+    let ``TryCatch<T1, T2> returns Ok<T2> when previous result is Ok<T1> and function call doesn't throw`` () =
+        let result = Result.Ok(42)
+        let value = "42"
+        Result.TryCatch(result, (fun v -> v.ToString()), (fun _ _ -> Errors.Error())) |> should equal (Result.Ok(value))
+
+    [<Fact>]
+    let ``TryCatch<T1, T2> returns Error<T2> when previous result is Ok<T1> and function call throws`` () =
+        let value = "OK"
+        let message = "This should not happen!"
+        let result = Result.Ok(value)
+        Result.TryCatch(result, (fun _ -> raise(Exception(message))), (fun v e -> Errors.Error(v + e.Message))) |> should equal (Result.Error(Errors.Error(value + message)))
+
+    [<Fact>]
+    let ``TryCatch<T1, T2> returns Error<T2> when previous result is Error<T1>`` () =
+        let error = Errors.Error("Oh no!")
+        let result = Result.Error<int>(error)
+        Result.TryCatch(result, (fun v -> v.ToString()), (fun _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))

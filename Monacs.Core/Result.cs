@@ -175,5 +175,23 @@ namespace Monacs.Core
             items.Any(i => i.IsError)
             ? Error<IEnumerable<T>>(items.First(i => i.IsError).Error)
             : Ok(items.Select(i => i.Value));
+
+        /* TryCatch */
+
+        public static Result<T> TryCatch<T>(Func<T> func, Func<Exception, ErrorDetails> errorHandler)
+        {
+            try
+            {
+                var result = func();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Error<T>(errorHandler(ex));
+            }
+        }
+
+        public static Result<T2> TryCatch<T1, T2>(this Result<T1> result, Func<T1, T2> func, Func<T1, Exception, ErrorDetails> errorHandler) =>
+            result.Bind(value => Result.TryCatch(() => func(value), e => errorHandler(value, e)));
     }
 }
