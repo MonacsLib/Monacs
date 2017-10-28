@@ -192,33 +192,35 @@ module TryGetResult =
         Result.TryGetResult(dict, key, (fun _ -> Errors.Error())) |> should equal (Result.Ok(value))
 
     [<Fact>]
-    let ``TryGetResult<TKey, TValue> returns Error<TValue> when key is not present in lookup`` () =
+    let ``TryGetResult<TKey, TValue> returns Error<IEnumerable<TValue>> when key is not present in lookup`` () =
         let lookup = [1].ToLookup(fun k -> k)
         let error = Errors.Error()
         Result.TryGetResult(lookup, 2, error) |> should equal (Result.Error<IEnumerable<int>>(error))
 
     [<Fact>]
-    let ``TryGetResult<TKey, TValue> returns Ok<TValue> when key is present in lookup`` () =
+    let ``TryGetResult<TKey, TValue> returns Ok<IEnumerable<TValue>> when key is present in lookup`` () =
         let key = 42
         let value = "hello"
         let lookup = [(key, value)].ToLookup((fun (k, v) -> k), (fun (k, v) -> v))
         let result = Result.TryGetResult(lookup, key, Errors.Error())
         result.IsOk |> should equal true
+        result.Value.Count() |> should equal 1
         result.Value |> should contain value
 
     [<Fact>]
-    let ``TryGetResult<TKey, TValue> with func returns Error<TValue> when key is not present in lookup`` () =
+    let ``TryGetResult<TKey, TValue> with func returns Error<IEnumerable<TValue>> when key is not present in lookup`` () =
         let lookup = ["bar"].ToLookup(fun k -> k)
         let key = "foo"
         Result.TryGetResult(lookup, key, (fun k -> Errors.Error(k))) |> should equal (Result.Error<IEnumerable<string>>(Errors.Error(key)))
 
     [<Fact>]
-    let ``TryGetResult<TKey, TValue> with func returns Ok<TValue> when key is present in lookup`` () =
+    let ``TryGetResult<TKey, TValue> with func returns Ok<IEnumerable<TValue>> when key is present in lookup`` () =
         let key = 42
         let value = "hello"
         let lookup = [(key, value)].ToLookup((fun (k, v) -> k), (fun (k, v) -> v))
         let result = Result.TryGetResult(lookup, key, (fun _ -> Errors.Error()))
         result.IsOk |> should equal true
+        result.Value.Count() |> should equal 1
         result.Value |> should contain value
 
 module Match =
