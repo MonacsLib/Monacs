@@ -107,6 +107,20 @@ namespace Monacs.Core
 
         public static Result<T> ToResult<T>(this Option<T> value, Func<ErrorDetails> errorFunc) where T : struct => OfOption(value, errorFunc);
 
+        /* TryGetResult */
+
+        public static Result<TValue> TryGetResult<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, ErrorDetails error) =>
+            dict.TryGetValue(key, out TValue value) ? Ok(value) : Error<TValue>(error);
+
+        public static Result<TValue> TryGetResult<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, Func<TKey, ErrorDetails> errorFunc) =>
+            dict.TryGetValue(key, out TValue value) ? Ok(value) : Error<TValue>(errorFunc(key));
+
+        public static Result<IEnumerable<TValue>> TryGetResult<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key, ErrorDetails error) =>
+            lookup.Contains(key) ? Ok(lookup[key]) : Error<IEnumerable<TValue>>(error);
+
+        public static Result<IEnumerable<TValue>> TryGetResult<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key, Func<TKey, ErrorDetails> errorFunc) =>
+            lookup.Contains(key) ? Ok(lookup[key]) : Error<IEnumerable<TValue>>(errorFunc(key));
+
         /* Match */
 
         public static T2 Match<T1, T2>(this Result<T1> result, Func<T1, T2> ok, Func<ErrorDetails, T2> error) =>
