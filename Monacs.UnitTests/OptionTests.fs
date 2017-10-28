@@ -107,6 +107,38 @@ module Converters =
         let value = "test"
         Option.OfString(value) |> should equal (Option.Some(value))
 
+module TryGetOption =
+    open System.Collections.Generic
+    open System.Linq
+
+    [<Fact>]
+    let ``TryGetOption<TKey, TValue> returns None<TValue> when key is not present in dictionary`` () =
+        let dict = new Dictionary<int, string>()
+        Option.TryGetOption(dict, 1) |> should equal (Option.None<string>())
+
+    [<Fact>]
+    let ``TryGetOption<TKey, TValue> returns Some<TValue> when key is present in dictionary`` () =
+        let dict = new Dictionary<int, string>()
+        let key = 42
+        let value = "hello"
+        dict.Add(42, value)
+        Option.TryGetOption(dict, key) |> should equal (Option.Some(value))
+
+    [<Fact>]
+    let ``TryGetOption<TKey, TValue> returns None<IEnumerable<TValue>> when key is not present in lookup`` () =
+        let lookup = [1].ToLookup(fun k -> k)
+        Option.TryGetOption(lookup, 2) |> should equal (Option.None<IEnumerable<int>>())
+
+    [<Fact>]
+    let ``TryGetOption<TKey, TValue> returns Some<IEnumerable<TValue>> when key is present in lookup`` () =
+        let key = 42
+        let value = "hello"
+        let lookup = [(key, value)].ToLookup((fun (k, v) -> k), (fun (k, v) -> v))
+        let result = Option.TryGetOption(lookup, key)
+        result.IsSome |> should equal true
+        result.Value.Count() |> should equal 1
+        result.Value |> should contain value
+
 module Match =
 
     [<Fact>]

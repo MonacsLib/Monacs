@@ -94,6 +94,14 @@ namespace Monacs.Core
 
         public static Option<T> ToOption<T>(this Result<T> value) where T : struct => OfResult(value);
 
+        /* TryGetOption */
+
+        public static Option<TValue> TryGetOption<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) =>
+            dict.TryGetValue(key, out TValue value) ? Some(value) : None<TValue>();
+
+        public static Option<IEnumerable<TValue>> TryGetOption<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key) =>
+            lookup.Contains(key) ? Some(lookup[key]) : None<IEnumerable<TValue>>();
+
         /* Match */
 
         public static T2 Match<T1, T2>(this Option<T1> option, Func<T1, T2> some, Func<T2> none) =>
