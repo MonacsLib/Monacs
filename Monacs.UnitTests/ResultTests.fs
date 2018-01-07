@@ -201,7 +201,7 @@ module TryGetResult =
     let ``TryGetResult<TKey, TValue> returns Ok<IEnumerable<TValue>> when key is present in lookup`` () =
         let key = 42
         let value = "hello"
-        let lookup = [(key, value)].ToLookup((fun (k, v) -> k), (fun (k, v) -> v))
+        let lookup = [(key, value)].ToLookup((fun (k, _) -> k), (fun (_, v) -> v))
         let result = Result.TryGetResult(lookup, key, Errors.Error())
         result.IsOk |> should equal true
         result.Value.Count() |> should equal 1
@@ -217,13 +217,14 @@ module TryGetResult =
     let ``TryGetResult<TKey, TValue> with func returns Ok<IEnumerable<TValue>> when key is present in lookup`` () =
         let key = 42
         let value = "hello"
-        let lookup = [(key, value)].ToLookup((fun (k, v) -> k), (fun (k, v) -> v))
+        let lookup = [(key, value)].ToLookup((fun (k, _) -> k), (fun (_, v) -> v))
         let result = Result.TryGetResult(lookup, key, (fun _ -> Errors.Error()))
         result.IsOk |> should equal true
         result.Value.Count() |> should equal 1
         result.Value |> should contain value
 
 module Match =
+    open System.Threading.Tasks
 
     [<Fact>]
     let ``Match<T1, T2> returns result of error when value is Error<T1>`` () =
@@ -325,7 +326,7 @@ module ``Side effects`` =
         let value = Result.Ok(42)
         let expected = "42"
         let mutable result = ""
-        Result.Do(value, (fun x -> result <- expected.ToString())) |> should equal value
+        Result.Do(value, (fun _ -> result <- expected.ToString())) |> should equal value
         result |> should equal expected
 
     [<Fact>]
@@ -333,7 +334,7 @@ module ``Side effects`` =
         let value = Result.Error<int>(Errors.Error())
         let expected = "test"
         let mutable result = expected
-        Result.Do(value, (fun x -> result <- "fail")) |> should equal value
+        Result.Do(value, (fun _ -> result <- "fail")) |> should equal value
         result |> should equal expected
 
     [<Fact>]
@@ -341,7 +342,7 @@ module ``Side effects`` =
         let value = Result.Ok(42)
         let expected = "test"
         let mutable result = expected
-        Result.DoWhenError(value, (fun x -> result <- "fail")) |> should equal value
+        Result.DoWhenError(value, (fun _ -> result <- "fail")) |> should equal value
         result |> should equal expected
 
     [<Fact>]
@@ -349,7 +350,7 @@ module ``Side effects`` =
         let value = Result.Error<int>(Errors.Error())
         let expected = "42"
         let mutable result = ""
-        Result.DoWhenError(value, (fun x -> result <- expected.ToString())) |> should equal value
+        Result.DoWhenError(value, (fun _ -> result <- expected.ToString())) |> should equal value
         result |> should equal expected
 
 module Collections =
