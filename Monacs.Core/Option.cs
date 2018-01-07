@@ -153,5 +153,44 @@ namespace Monacs.Core
             items.Any(i => i.IsNone)
             ? None<IEnumerable<T>>()
             : Some(items.Select(i => i.Value));
+
+        public static Option<T> TryFind<T>(this IEnumerable<T> items, Func<T, bool> predicate)
+        {
+            if (items != null)
+                foreach (T element in items) {
+                    if (predicate(element)) return Some(element);
+                }
+            return None<T>();
+        }
+
+        public static Option<T> TryFirst<T>(this IEnumerable<T> items)
+        {
+            if (items == null) return None<T>();
+            IList<T> list = items as IList<T>;
+            if (list != null) {
+                if (list.Count > 0) return Some(list[0]);
+            } else {
+                foreach (T element in items) {
+                    return Some(element);
+                }
+            }
+            return None<T>();
+        }
+
+        public static Option<T> TryElementAt<T>(this IEnumerable<T> items, int index)
+        {
+            if (items == null || index < 0) return None<T>();
+            IList<T> list = items as IList<T>;
+            if (list != null) {
+                if (list.Count >= index+1) return Some(list[index]);
+            } else {
+                int idx = 0;
+                foreach (T element in items) {
+                    if (idx == index) return Some(element);
+                    idx++;
+                }
+            }
+            return None<T>();
+        }
     }
 }

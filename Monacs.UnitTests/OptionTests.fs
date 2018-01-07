@@ -286,3 +286,82 @@ module Collections =
         let values = seq { yield Option.Some(42); yield Option.Some(123); yield Option.None() }
         let expected = Option.None<int seq>()
         Option.Sequence(values) |> should equal expected
+
+    [<Fact>]
+    let ``TryFind<T> returns None<T> when collection is empty`` () =
+        let values : int list = []
+        let expected = Option.None<int>()
+        Option.TryFind(values, (fun _ -> true)) |> should equal expected
+
+    [<Fact>]
+    let ``TryFind<T> returns None<T> when no item matches predicate`` () =
+        let values = [1; 2; 3]
+        let expected = Option.None<int>()
+        Option.TryFind(values, (fun i -> i = 4)) |> should equal expected
+
+    [<Fact>]
+    let ``TryFind<T> returns Some<T> when any item matches predicate`` () =
+        let values = [1; 2; 3]
+        let expectedValue = 2
+        let expected = Option.Some(expectedValue)
+        Option.TryFind(values, (fun i -> i = expectedValue)) |> should equal expected
+
+    [<Fact>]
+    let ``TryFirst<T> returns None<T> when parameter is empty list`` () =
+        let values : System.Collections.Generic.List<int> = new System.Collections.Generic.List<int>()
+        let expected = Option.None<int>()
+        Option.TryFirst(values) |> should equal expected
+
+    [<Fact>]
+    let ``TryFirst<T> returns None<T> when parameter is empty sequence`` () =
+        let values : int seq = [] |> Seq.ofList
+        let expected = Option.None<int>()
+        Option.TryFirst(values) |> should equal expected
+
+    [<Fact>]
+    let ``TryFirst<T> returns Some<T> when parameter is non-empty list`` () =
+        let values : System.Collections.Generic.List<int> = new System.Collections.Generic.List<int>([1; 2; 3])
+        let expected = Option.Some(values.[0])
+        Option.TryFirst(values) |> should equal expected
+
+    [<Fact>]
+    let ``TryFirst<T> returns Some<T> when parameter is non-empty sequence`` () =
+        let values = [1; 2; 3]
+        let expected = Option.Some(values.[0])
+        Option.TryFirst(values |> Seq.ofList) |> should equal expected
+
+    [<Fact>]
+    let ``TryElementAt<T> returns None<T> when parameter is empty list`` () =
+        let values : System.Collections.Generic.List<int> = new System.Collections.Generic.List<int>()
+        let expected = Option.None<int>()
+        Option.TryElementAt(values, 0) |> should equal expected
+
+    [<Fact>]
+    let ``TryElementAt<T> returns None<T> when parameter is empty sequence`` () =
+        let values : int seq = [] |> Seq.ofList
+        let expected = Option.None<int>()
+        Option.TryElementAt(values, 2) |> should equal expected
+
+    [<Fact>]
+    let ``TryElementAt<T> returns None<T> when parameter is non-empty list and doesn't contain nth element`` () =
+        let values : System.Collections.Generic.List<int> = new System.Collections.Generic.List<int>([1; 2; 3])
+        let expected = Option.None<int>()
+        Option.TryElementAt(values, 4) |> should equal expected
+
+    [<Fact>]
+    let ``TryElementAt<T> returns None<T> when parameter is non-empty sequence and doesn't contain nth element`` () =
+        let values = [1; 2; 3]
+        let expected = Option.None<int>()
+        Option.TryElementAt(values |> Seq.ofList, 3) |> should equal expected
+
+    [<Fact>]
+    let ``TryElementAt<T> returns Some<T> when parameter is non-empty list and contains nth element`` () =
+        let values : System.Collections.Generic.List<int> = new System.Collections.Generic.List<int>([1; 2; 3])
+        let expected = Option.Some(values.[2])
+        Option.TryElementAt(values, 2) |> should equal expected
+
+    [<Fact>]
+    let ``TryElementAt<T> returns Some<T> when parameter is non-empty sequence and contains nth element`` () =
+        let values = [1; 2; 3]
+        let expected = Option.Some(values.[1])
+        Option.TryElementAt(values |> Seq.ofList, 1) |> should equal expected
