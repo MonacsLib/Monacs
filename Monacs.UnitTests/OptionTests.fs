@@ -133,7 +133,7 @@ module TryGetOption =
     let ``TryGetOption<TKey, TValue> returns Some<IEnumerable<TValue>> when key is present in lookup`` () =
         let key = 42
         let value = "hello"
-        let lookup = [(key, value)].ToLookup((fun (k, v) -> k), (fun (k, v) -> v))
+        let lookup = [(key, value)].ToLookup((fun (k, _) -> k), (fun (_, v) -> v))
         let result = Option.TryGetOption(lookup, key)
         result.IsSome |> should equal true
         result.Value.Count() |> should equal 1
@@ -238,7 +238,7 @@ module ``Side effects`` =
         let value = Option.Some(42)
         let expected = "42"
         let mutable result = ""
-        Option.Do(value, (fun x -> result <- expected.ToString())) |> should equal value
+        Option.Do(value, (fun _ -> result <- expected.ToString())) |> should equal value
         result |> should equal expected
 
     [<Fact>]
@@ -246,7 +246,7 @@ module ``Side effects`` =
         let value = Option.None<int>()
         let expected = "test"
         let mutable result = expected
-        Option.Do(value, (fun x -> result <- "fail")) |> should equal value
+        Option.Do(value, (fun _ -> result <- "fail")) |> should equal value
         result |> should equal expected
 
     [<Fact>]
@@ -254,7 +254,7 @@ module ``Side effects`` =
         let value = Option.Some(42)
         let expected = "test"
         let mutable result = expected
-        Option.DoWhenNone(value, (fun x -> result <- "fail")) |> should equal value
+        Option.DoWhenNone(value, (fun _ -> result <- "fail")) |> should equal value
         result |> should equal expected
 
     [<Fact>]
@@ -262,7 +262,7 @@ module ``Side effects`` =
         let value = Option.None<int>()
         let expected = "42"
         let mutable result = ""
-        Option.DoWhenNone(value, (fun x -> result <- expected.ToString())) |> should equal value
+        Option.DoWhenNone(value, (fun _ -> result <- expected.ToString())) |> should equal value
         result |> should equal expected
 
 module Collections =
