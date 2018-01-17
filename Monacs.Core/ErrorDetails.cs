@@ -1,9 +1,42 @@
 using System;
+using static Monacs.Core.Option;
 
 namespace Monacs.Core
 {
     public struct ErrorDetails
     {
+        public ErrorDetails(ErrorLevel level, Option<string> message)
+        {
+            Level = level;
+            Message = message;
+            Key = None<string>();
+            Exception = None<Exception>();
+        }
+
+        public ErrorDetails(ErrorLevel level, Option<Exception> exception)
+        {
+            Level = level;
+            Message = None<string>();
+            Key = None<string>();
+            Exception = exception;
+        }
+
+        public ErrorDetails(ErrorLevel level, Option<string> message, Option<string> key)
+        {
+            Level = level;
+            Message = message;
+            Key = key;
+            Exception = None<Exception>();
+        }
+
+        public ErrorDetails(ErrorLevel level, Option<string> message, Option<Exception> exception)
+        {
+            Level = level;
+            Message = message;
+            Key = None<string>();
+            Exception = exception;
+        }
+
         public ErrorDetails(ErrorLevel level, Option<string> message, Option<string> key, Option<Exception> exception)
         {
             Level = level;
