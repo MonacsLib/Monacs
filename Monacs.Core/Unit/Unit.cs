@@ -4,7 +4,7 @@ namespace Monacs.Core.Unit
 {
     public struct Unit : IEquatable<Unit>
     {
-        public static Unit Default { get; } = default(Unit);
+        public static Unit Default { get; } = default;
 
         public bool Equals(Unit other) => true;
 
