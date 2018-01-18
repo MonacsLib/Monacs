@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Monacs.Core
 {
@@ -71,28 +70,28 @@ namespace Monacs.Core
 
         /* Match */
 
-        public static T2 Match<T1, T2>(this Result<T1> result, Func<T1, T2> ok, Func<ErrorDetails, T2> error) =>
+        public static TOut Match<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> ok, Func<ErrorDetails, TOut> error) =>
             result.IsOk ? ok(result.Value) : error(result.Error);
 
-        public static T2 MatchTo<T1, T2>(this Result<T1> result, T2 ok, T2 error) =>
+        public static TOut MatchTo<TIn, TOut>(this Result<TIn> result, TOut ok, TOut error) =>
             result.IsOk ? ok : error;
 
         /* Bind */
 
-        public static Result<T2> Bind<T1, T2>(this Result<T1> result, Func<T1, Result<T2>> binder) =>
-            result.IsOk ? binder(result.Value) : Error<T2>(result.Error);
+        public static Result<TOut> Bind<TIn, TOut>(this Result<TIn> result, Func<TIn, Result<TOut>> binder) =>
+            result.IsOk ? binder(result.Value) : Error<TOut>(result.Error);
 
         /* Map */
 
-        public static Result<T2> Map<T1, T2>(this Result<T1> result, Func<T1, T2> mapper) =>
-            result.IsOk ? Ok(mapper(result.Value)) : Error<T2>(result.Error);
+        public static Result<TOut> Map<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> mapper) =>
+            result.IsOk ? Ok(mapper(result.Value)) : Error<TOut>(result.Error);
 
         /* Getters */
 
         public static T GetOrDefault<T>(this Result<T> result, T whenError = default(T)) =>
             result.IsOk ? result.Value : whenError;
 
-        public static T2 GetOrDefault<T1, T2>(this Result<T1> result, Func<T1, T2> getter, T2 whenError = default(T2)) =>
+        public static TOut GetOrDefault<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> getter, TOut whenError = default(TOut)) =>
             result.IsOk ? getter(result.Value) : whenError;
 
         /* Side Effects */
@@ -139,17 +138,7 @@ namespace Monacs.Core
             }
         }
 
-        public static Result<T2> TryCatch<T1, T2>(this Result<T1> result, Func<T1, T2> func, Func<T1, Exception, ErrorDetails> errorHandler) =>
+        public static Result<TOut> TryCatch<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> func, Func<TIn, Exception, ErrorDetails> errorHandler) =>
             result.Bind(value => Result.TryCatch(() => func(value), e => errorHandler(value, e)));
-
-        public static async Task<Result<T2>> TryCatchAsync<T1, T2>(this Result<T1> result, Func<T1, Task<T2>> func, Func<T1, Exception, ErrorDetails> errorHandler) =>
-            await result.Bind(value => Result.TryCatch(async () => await func(value), e => errorHandler(value, e))).Flip();
-
-        /* Flip */
-
-        public static async Task<Result<T>> Flip<T>(this Result<Task<T>> result) =>
-            result.IsOk
-            ? Ok(await result.Value)
-            : Error<T>(result.Error);
     }
 }

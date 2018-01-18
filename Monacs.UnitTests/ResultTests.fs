@@ -224,7 +224,6 @@ module TryGetResult =
         result.Value |> should contain value
 
 module Match =
-    open System.Threading.Tasks
 
     [<Fact>]
     let ``Match<T1, T2> returns result of error when value is Error<T1>`` () =

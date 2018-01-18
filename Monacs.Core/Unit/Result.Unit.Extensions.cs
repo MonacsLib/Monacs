@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace Monacs.Core
+namespace Monacs.Core.Unit
 {
-    public static partial class Result
+    public static class Result
     {
-        public static class Unit
-        {
-            public static Result<Monacs.Core.Unit.Unit> Ok() =>
-                Result.Ok(Monacs.Core.Unit.Unit.Default);
+        public static Result<Unit> Ok() =>
+            Core.Result.Ok(Unit.Default);
 
-            public static Result<Monacs.Core.Unit.Unit> Error(ErrorDetails error) =>
-                Result.Error<Monacs.Core.Unit.Unit>(error);
-        }
+        public static Result<Unit> Error(ErrorDetails error) =>
+            Core.Result.Error<Unit>(error);
 
-        public static Result<Monacs.Core.Unit.Unit> Ignore<TValue>(this Result<TValue> result) =>
-            result.Map(_ => Monacs.Core.Unit.Unit.Default);
+        public static Result<Unit> Ignore<T>(this Result<T> result) =>
+            result.Map(_ => Unit.Default);
     }
 }
