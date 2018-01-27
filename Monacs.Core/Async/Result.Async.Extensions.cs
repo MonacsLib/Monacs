@@ -44,6 +44,15 @@ namespace Monacs.Core.Async
         public static async Task<TOut> MatchAsync<TIn, TOut>(this Task<Result<TIn>> result, Func<TIn, TOut> ok, Func<ErrorDetails, TOut> error) =>
             (await result).Match(ok, error);
 
+        public static async Task<TOut> MatchAsync<TIn, TOut>(this Task<Result<TIn>> result, Func<TIn, Task<TOut>> ok, Func<ErrorDetails, Task<TOut>> error) =>
+            await (await result).MatchAsync(ok, error);
+
+        public static async Task<TOut> MatchAsync<TIn, TOut>(this Task<Result<TIn>> result, Func<TIn, Task<TOut>> ok, Func<ErrorDetails, TOut> error) =>
+            await (await result).MatchAsync(ok, error);
+
+        public static async Task<TOut> MatchAsync<TIn, TOut>(this Task<Result<TIn>> result, Func<TIn, TOut> ok, Func<ErrorDetails, Task<TOut>> error) =>
+            await (await result).MatchAsync(ok, error);
+
         /* IgnoreAsync */
 
         public static async Task<Result<Monacs.Core.Unit.Unit>> IgnoreAsync<T>(this Task<Result<T>> result) =>
@@ -64,7 +73,7 @@ namespace Monacs.Core.Async
         public static async Task<Result<T>> DoAsync<T>(this Task<Result<T>> resultAsync, Func<T, Task> action) =>
             await (await resultAsync).DoAsync(action);
 
-        public static async Task<Result<T>> DoWhenError<T>(this Task<Result<T>> resultAsync, Action<ErrorDetails> action) =>
+        public static async Task<Result<T>> DoWhenErrorAsync<T>(this Task<Result<T>> resultAsync, Action<ErrorDetails> action) =>
             (await resultAsync).DoWhenError(action);
 
         public static async Task<Result<T>> DoWhenErrorAsync<T>(this Result<T> result, Func<ErrorDetails, Task> action)
@@ -86,10 +95,20 @@ namespace Monacs.Core.Async
 
         /* TryCatchAsync */
 
-        public static async Task<Result<T>> TryCatchAsync<T>(Func<Task<T>> func, Func<Exception, ErrorDetails> errorHandler) =>
-            await Core.Result.TryCatch(async () => await func(), e => errorHandler(e)).FlipAsync();
+        public static async Task<Result<T>> TryCatchAsync<T>(Func<Task<T>> func, Func<Exception, ErrorDetails> errorHandler)
+        {
+            try
+            {
+                var result = await func();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return Error<T>(errorHandler(ex));
+            }
+        }
 
         public static async Task<Result<TOut>> TryCatchAsync<TIn, TOut>(this Result<TIn> result, Func<TIn, Task<TOut>> func, Func<TIn, Exception, ErrorDetails> errorHandler) =>
-            await result.Bind(value => Core.Result.TryCatch(async () => await func(value), e => errorHandler(value, e))).FlipAsync();
+            await result.BindAsync(value => TryCatchAsync(() => func(value), e => errorHandler(value, e)));
     }
 }

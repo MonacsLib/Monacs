@@ -345,7 +345,7 @@ module ``Side effects`` =
         result |> should equal expected
 
     [<Fact>]
-    let ``Do<T> returns value and executes action when value is Error<T>`` () =
+    let ``DoWhenError<T> returns value and executes action when value is Error<T>`` () =
         let value = Result.Error<int>(Errors.Error())
         let expected = "42"
         let mutable result = ""
