@@ -1,9 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Monacs.Core
 {
+    /// <summary>
+    /// Represents Success and Failure.
+    /// Great for working in Railway Oriented way.
+    /// </summary>
+    /// <typeparam name="T">Expected returned value type.</typeparam>
     public struct Result<T> : IEquatable<Result<T>>
     {
         internal Result(T value)
@@ -20,18 +24,35 @@ namespace Monacs.Core
             IsOk = false;
         }
 
+        /// <summary>
+        /// Wrapped result value. Only valid when result is successful.
+        /// </summary>
         public T Value { get; }
 
+        /// <summary>
+        /// Field filled on operation failure.
+        /// </summary>
         public ErrorDetails Error { get; }
 
+        /// <summary>
+        /// Result is successful (Ok) when operation ends in optimistic way.
+        /// I.e.: Dividing two numbers returns their quotient.
+        /// </summary>
         public bool IsOk { get; }
 
+        /// <summary>
+        /// Result is failure (Error) when operation ends in pesimistic way.
+        /// I.e.: Dividing by zero should always be forbidden and the result should be failure.
+        /// </summary>
         public bool IsError => !IsOk;
 
         public override string ToString() =>
             IsOk
             ? $"Ok<{typeof(T).Name}>({Value})"
             : $"Error<{typeof(T).Name}>({Error})";
+
+
+        /* Equality */
 
         public bool Equals(Result<T> other) =>
             (IsError && other.IsError && EqualityComparer<ErrorDetails>.Default.Equals(Error, other.Error))
