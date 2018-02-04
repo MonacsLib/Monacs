@@ -9,27 +9,27 @@ namespace Monacs.Core.Unit
     public struct Unit : IEquatable<Unit>
     {
         ///<summary>
-        /// The only value of Unit.
+        /// The only value of <see cref="Unit" />.
         ///</summary>
         public static Unit Default { get; } = default;
 
         ///<summary>
-        /// Unit is always equal to itself. There is only one possible value of Unit.
+        /// <see cref="Unit" /> is always equal to itself. There is only one possible value of <see cref="Unit" />.
         ///</summary>
         public bool Equals(Unit other) => true;
 
         ///<summary>
-        /// Unit is only equal to itself.
+        /// <see cref="Unit" /> is only equal to itself.
         ///</summary>
         public override bool Equals(object obj) => obj is Unit;
 
         ///<summary>
-        /// Hash Code of Unit is always 0.
+        /// Hash Code of <see cref="Unit" /> is always 0.
         ///</summary>
         public override int GetHashCode() => 0;
 
         ///<summary>
-        /// String representation of Unit is ().
+        /// String representation of <see cref="Unit" /> is ().
         ///</summary>
         public override string ToString() => "()";
 
