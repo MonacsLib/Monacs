@@ -5,6 +5,7 @@ namespace Monacs.Core
 {
     /// <summary>
     /// Represents the result of the operation that may succeed or fail.
+    /// It is recommended to use provided extension methods and not to use properties of the result directly.
     /// </summary>
     /// <typeparam name="T">Expected returned value type.</typeparam>
     public struct Result<T> : IEquatable<Result<T>>
@@ -18,16 +19,14 @@ namespace Monacs.Core
 
         internal Result(ErrorDetails error)
         {
-            Value = default(T);
+            Value = default;
             Error = error;
             IsOk = false;
         }
-
+        
         /// <summary>
         /// Contains the computed value of the operation if it ends successfully. 
-        /// <para /> 
         /// <para /> !!! It is not recommended to use it directly !!!
-        /// <para /> 
         /// <para /> Use one of the following extension methods instead:
         /// <para /> * <see cref="Result.GetOrDefault{T}"/>, 
         /// <para /> * <see cref="Result.Map{TIn,TOut}"/>, 
