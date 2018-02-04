@@ -6,7 +6,7 @@ It also encourages use of [Railway Oriented Programming](https://fsharpforfunand
 Monacs uses type and function names similar to F#. That's intentional and it should make potential transition to F# easier.
 Some people may prefer Haskell type names (e.g. Maybe instead of Option) or LINQ-like function naming (e.g. Select instead of Map) - if that's your preference, you can always fork this library and change the names accordingly :)
 
-[![Build Status](https://travis-ci.org/bartsokol/Monacs.svg?branch=master)](https://travis-ci.org/bartsokol/Monacs)
+[![Build Status](https://travis-ci.org/MonacsLib/Monacs.svg?branch=master)](https://travis-ci.org/MonacsLib/Monacs)
 
 ## Target platform and language versions
 
@@ -26,8 +26,7 @@ If you really need to stick to C# and this library is not enough then you can tr
 
 ## Status
 
-It's currently work-in-progress, expect new things to be added, APIs to be changed and docs to be updated more or less often.
-I'll be doing my best
+It's currently work-in-progress, expect new things to be added, APIs to be changed and docs to be updated more or less often. First publicly available version was released [on NuGet](https://www.nuget.org/packages/Monacs.Core/).
 
 ## Contributing
 
@@ -38,6 +37,6 @@ You can also contribute by sending pull requests with bug fixes or enhancments.
 
 This code is provided as is, without any warranties, as specified in [MIT license](LICENSE).
 
-## Contact me
+## Maintainers
 
-You can reach me on Twitter - I'm [@bartsokol](https://twitter.com/bartsokol) there.
+* Bart Sokol - [@bartsokol on GitHub](https://github.com/bartsokol/) and [@bartsokol on Twitter](https://twitter.com/bartsokol).
