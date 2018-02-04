@@ -4,8 +4,7 @@ using System.Collections.Generic;
 namespace Monacs.Core
 {
     /// <summary>
-    /// Represents Success and Failure.
-    /// Great for working in Railway Oriented way.
+    /// Represents the result of the operation that may succeed or fail.
     /// </summary>
     /// <typeparam name="T">Expected returned value type.</typeparam>
     public struct Result<T> : IEquatable<Result<T>>
@@ -25,7 +24,15 @@ namespace Monacs.Core
         }
 
         /// <summary>
-        /// Wrapped result value. Only valid when result is successful.
+        /// Contains the computed value of the operation if it ends successfully. 
+        /// <para /> 
+        /// <para /> !!! It is not recommended to use it directly !!!
+        /// <para /> 
+        /// <para /> Use one of the following extension methods instead:
+        /// <para /> * <see cref="Result.GetOrDefault{T}"/>, 
+        /// <para /> * <see cref="Result.Map{TIn,TOut}"/>, 
+        /// <para /> * <see cref="Result.Bind{TIn,TOut}"/>,
+        /// <para /> * <see cref="Result.Match{TIn,TOut}"/> 
         /// </summary>
         public T Value { get; }
 
@@ -35,14 +42,15 @@ namespace Monacs.Core
         public ErrorDetails Error { get; }
 
         /// <summary>
-        /// Result is successful (Ok) when operation ends in optimistic way.
-        /// I.e.: Dividing two numbers returns their quotient.
+        /// Indicates that the result is on the success path 
+        /// and you should expect the output in the <see cref="Value"/> field.
         /// </summary>
         public bool IsOk { get; }
 
         /// <summary>
-        /// Result is failure (Error) when operation ends in pesimistic way.
-        /// I.e.: Dividing by zero should always be forbidden and the result should be failure.
+        /// Indicates that the result is on the failure path 
+        /// and you should expect error in <see cref="Error"/> field 
+        /// and no value set on <see cref="Value"/> field.
         /// </summary>
         public bool IsError => !IsOk;
 
