@@ -4,7 +4,7 @@ namespace Monacs.Core.Unit
 {
     ///<summary>
     /// Type that has only one value.
-    /// Used to replace void whenever some value is needed, e.g. you can return Task<Unit>.
+    /// Used to replace void whenever some value is needed, e.g. you can return Task{Unit}.
     ///</summary>
     public struct Unit : IEquatable<Unit>
     {
@@ -33,8 +33,14 @@ namespace Monacs.Core.Unit
         ///</summary>
         public override string ToString() => "()";
 
+        ///<summary>
+        /// <see cref="Unit" /> is always equal to itself.
+        ///</summary>
         public static bool operator ==(Unit first, Unit second) => true;
 
+        ///<summary>
+        /// <see cref="Unit" /> is always equal to itself.
+        ///</summary>
         public static bool operator !=(Unit first, Unit second) => false;
     }
 }
