@@ -1,5 +1,4 @@
 using System;
-using static Monacs.Core.Option;
 
 namespace Monacs.Core
 {
