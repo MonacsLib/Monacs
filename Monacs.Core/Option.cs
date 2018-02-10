@@ -28,12 +28,12 @@ namespace Monacs.Core
         public T Value { get; }
 
         /// <summary>
-        /// Returns true if the option has a value that is not None.
+        /// Returns true if the option has value.
         /// </summary>
         public bool IsSome { get; }
 
         /// <summary>
-        /// Returns true if the option has the None value.
+        /// Returns true if the option is None.
         /// </summary>
         public bool IsNone => !IsSome;
 
