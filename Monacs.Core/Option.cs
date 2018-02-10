@@ -18,7 +18,7 @@ namespace Monacs.Core
         
         /// <summary>
         /// Encapsulated valid value.
-        /// <para /> !!! It is not recommended to use it directly !!!
+        /// <para /> It is not recommended to use it directly.
         /// <para /> Use one of the following extension methods instead:
         /// <para /> * <see cref="Option.GetOrDefault{T}"/>, 
         /// <para /> * <see cref="Option.Map{TIn,TOut}"/>, 

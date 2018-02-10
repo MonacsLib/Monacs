@@ -26,7 +26,7 @@ namespace Monacs.Core
         
         /// <summary>
         /// Contains the computed value of the operation if it ends successfully. 
-        /// <para /> !!! It is not recommended to use it directly !!!
+        /// <para /> It is not recommended to use it directly.
         /// <para /> Use one of the following extension methods instead:
         /// <para /> * <see cref="Result.GetOrDefault{T}"/>, 
         /// <para /> * <see cref="Result.Map{TIn,TOut}"/>, 
