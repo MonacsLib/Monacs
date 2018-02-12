@@ -4,37 +4,114 @@ using System.Linq;
 
 namespace Monacs.Core
 {
+    /// <summary>
+    /// Contains the set of extensions to work with the <see cref="Option{T}"/> type.
+    /// </summary>
     public static class Option
     {
         /* Constructors */
 
+        /// <summary>
+        /// Creates the Some case instance of the <see cref="Option{T}"/> type, encapsulating provided value.
+        /// </summary>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to encapsulate.</param>
         public static Option<T> Some<T>(T value) => new Option<T>(value);
 
+        /// <summary>
+        /// Creates the None case instance of the <see cref="Option{T}"/> type, containing no value.
+        /// </summary>
+        /// <typeparam name="T">Desired type parameter for <see cref="Option{T}"/> type.</typeparam>
         public static Option<T> None<T>() => default(Option<T>);
 
         /* Converters */
 
+        /// <summary>
+        /// Converts the value of class T to the <see cref="Option{T}"/> type.
+        /// If the value is null, the None case is yielded.
+        /// Otherwise Some case with provided value is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to convert to <see cref="Option{T}"/>.</param>
         public static Option<T> OfObject<T>(T value) where T : class =>
             value != null ? Some(value) : None<T>();
 
+        /// <summary>
+        /// Converts the value of class T to the <see cref="Option{T}"/> type.
+        /// If the value is null, the None case is yielded.
+        /// Otherwise Some case with provided value is returned.
+        /// </summary>
+        /// <remarks>Extension method variant of <see cref="Option.OfObject{T}(T)"/></remarks>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to convert to <see cref="Option{T}"/>.</param>
         public static Option<T> ToOption<T>(this T value) where T : class => OfObject(value);
 
+        /// <summary>
+        /// Converts the value of <see cref="Nullable{T}"/> to the <see cref="Option{T}"/> type.
+        /// If the value is null, the None case is yielded.
+        /// Otherwise Some case with provided value is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to convert to <see cref="Option{T}"/>.</param>
         public static Option<T> OfNullable<T>(T? value) where T : struct =>
             value.HasValue ? Some(value.Value) : None<T>();
 
+        /// <summary>
+        /// Converts the value of <see cref="Nullable{T}"/> to the <see cref="Option{T}"/> type.
+        /// If the value is null, the None case is yielded.
+        /// Otherwise Some case with provided value is returned.
+        /// </summary>
+        /// <remarks>Extension method variant of <see cref="Option.OfNullable{T}(T?)"/></remarks>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to convert to <see cref="Option{T}"/>.</param>
         public static Option<T> ToOption<T>(this T? value) where T : struct => OfNullable(value);
 
+        /// <summary>
+        /// Converts the value of <see cref="Option{T}"/> to the <see cref="Nullable{T}"/> type.
+        /// If the option is the None case, null is yielded.
+        /// Otherwise encapsulated value is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to convert to <see cref="Nullable{T}"/>.</param>
         public static T? ToNullable<T>(Option<T> value) where T : struct =>
             value.IsSome ? value.Value : (T?)null;
 
+        /// <summary>
+        /// Converts the string value to the <see cref="Option{T}"/> type.
+        /// If the value is null or empty string, the None case is yielded.
+        /// Otherwise Some case with provided value is returned.
+        /// </summary>
+        /// <param name="value">The value to convert to <see cref="Option{T}"/>.</param>
         public static Option<string> OfString(string value) =>
             string.IsNullOrEmpty(value) ? None<string>() : Some(value);
 
+        /// <summary>
+        /// Converts the string value to the <see cref="T:Option{string}"/> type.
+        /// If the value is null or empty string, the None case is yielded.
+        /// Otherwise Some case with provided value is returned.
+        /// </summary>
+        /// <remarks>Extension method variant of <see cref="Option.OfString(string)"/></remarks>
+        /// <param name="value">The value to convert to <see cref="T:Option{string}"/>.</param>
         public static Option<string> ToOption(this string value) => OfString(value);
 
+        /// <summary>
+        /// Converts the value of <see cref="Result{T}"/> to the <see cref="Option{T}"/> type.
+        /// If the value is the Error case, the None case is yielded.
+        /// Otherwise Some case with encapsulated value is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to convert to <see cref="Option{T}"/>.</param>
         public static Option<T> OfResult<T>(Result<T> value) where T : struct =>
             value.IsOk ? Some(value.Value) : None<T>();
 
+        /// <summary>
+        /// Converts the value of <see cref="Result{T}"/> to the <see cref="Option{T}"/> type.
+        /// If the value is the Error case, the None case is yielded.
+        /// Otherwise Some case with encapsulated value is returned.
+        /// </summary>
+        /// <remarks>Extension method variant of <see cref="Option.OfResult{T}(Result{T})"/></remarks>
+        /// <typeparam name="T">Type of the encapsulated value.</typeparam>
+        /// <param name="value">The value to convert to <see cref="Option{T}"/>.</param>
         public static Option<T> ToOption<T>(this Result<T> value) where T : struct => OfResult(value);
 
         /* TryGetOption */
