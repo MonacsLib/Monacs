@@ -8,3 +8,4 @@ Monacs is a library that provides a set of types and functions that can be used 
 - **Types**
   - [Option\<T>](Option.md)
   - [Result\<T>](Result.md)
+  - [ErrorDetails](Errors.md)
