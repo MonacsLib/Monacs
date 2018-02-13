@@ -142,10 +142,31 @@ namespace Monacs.Core
 
         /* Match */
 
-        public static T2 Match<T1, T2>(this Option<T1> option, Func<T1, T2> some, Func<T2> none) =>
+        /// <summary>
+        /// Does the pattern matching on the <see cref="Option{T}"/> type.
+        /// If the <paramref name="option"/> is Some, calls <paramref name="some"/> function
+        /// with the value from the option as a parameter and returns its result.
+        /// Otherwise calls <paramref name="none"/> function and returns its result.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the option.</typeparam>
+        /// <typeparam name="TOut">Type of the returned value.</typeparam>
+        /// <param name="option">The option to match on.</param>
+        /// <param name="some">Function called for the Some case.</param>
+        /// <param name="none">Function called for the None case.</param>
+        public static TOut Match<TIn, TOut>(this Option<TIn> option, Func<TIn, TOut> some, Func<TOut> none) =>
             option.IsSome ? some(option.Value) : none();
 
-        public static T2 MatchTo<T1, T2>(this Option<T1> option, T2 some, T2 none) =>
+        /// <summary>
+        /// Does the pattern matching on the <see cref="Option{T}"/> type.
+        /// If the <paramref name="option"/> is Some, returns <paramref name="some"/> value.
+        /// Otherwise returns <paramref name="none"/> value.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the option.</typeparam>
+        /// <typeparam name="TOut">Type of the returned value.</typeparam>
+        /// <param name="option">The option to match on.</param>
+        /// <param name="some">Value returned for the Some case.</param>
+        /// <param name="none">Value returned for the None case.</param>
+        public static TOut MatchTo<TIn, TOut>(this Option<TIn> option, TOut some, TOut none) =>
             option.IsSome ? some : none;
 
         /* Bind */
