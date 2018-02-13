@@ -116,9 +116,27 @@ namespace Monacs.Core
 
         /* TryGetOption */
 
-        public static Option<TValue> TryGetOption<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) =>
-            dict.TryGetValue(key, out TValue value) ? Some(value) : None<TValue>();
+        /// <summary>
+        /// Tries to get the element with the given <paramref name="key"/> from the <paramref name="dictionary"/>.
+        /// If the value is found, returns Some case of the <see cref="Option{T}"/> type with the value from the dictionary.
+        /// Otherwise returns None case of the <see cref="Option{T}"/> type.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key in the dictionary.</typeparam>
+        /// <typeparam name="TValue">Type of the value in the dictionary.</typeparam>
+        /// <param name="dictionary">The dictionary to search in.</param>
+        /// <param name="key">The key to look for.</param>
+        public static Option<TValue> TryGetOption<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key) =>
+            dictionary.TryGetValue(key, out TValue value) ? Some(value) : None<TValue>();
 
+        /// <summary>
+        /// Tries to get the elements with the given <paramref name="key"/> from the <paramref name="lookup"/>.
+        /// If any value is found, returns Some case of the <see cref="Option{T}"/> type with the values from the lookup.
+        /// Otherwise returns None case of the <see cref="Option{T}"/> type.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key in the lookup.</typeparam>
+        /// <typeparam name="TValue">Type of the value in the lookup.</typeparam>
+        /// <param name="lookup">The lookup to search in.</param>
+        /// <param name="key">The key to look for.</param>
         public static Option<IEnumerable<TValue>> TryGetOption<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key) =>
             lookup.Contains(key) ? Some(lookup[key]) : None<IEnumerable<TValue>>();
 
