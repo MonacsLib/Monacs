@@ -199,10 +199,29 @@ namespace Monacs.Core
 
         /* Getters */
 
+        /// <summary>
+        /// Gets the value of the <paramref name="option"/> if it's Some case.
+        /// If the option is None case returns value specified by the <paramref name="whenNone"/> parameter;
+        /// if the parameter is not set returns the default value of the type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the option.</typeparam>
+        /// <param name="option">The option to get a value from.</param>
+        /// <param name="whenNone">Value to return if the option is the None case.</param>
         public static T GetOrDefault<T>(this Option<T> option, T whenNone = default(T)) =>
             option.IsSome ? option.Value : whenNone;
 
-        public static T2 GetOrDefault<T1, T2>(this Option<T1> option, Func<T1, T2> getter, T2 whenNone = default(T2)) =>
+        /// <summary>
+        /// Gets the value of the <paramref name="option"/> using the <paramref name="getter"/> function if it's Some case.
+        /// If the option is None case returns value specified by the <paramref name="whenNone"/> parameter;
+        /// if the parameter is not set returns the default value of the type <typeparamref name="TOut"/>.
+        /// </summary>
+        /// <remarks>Effectively the combination of <see cref="Option.Map{TIn, TOut}(Option{TIn}, Func{TIn, TOut})"/> and <see cref="Option.GetOrDefault{T}(Option{T}, T)"/> calls.</remarks>
+        /// <typeparam name="TIn">Type of the value in the option.</typeparam>
+        /// <typeparam name="TOut">Type of the return value.</typeparam>
+        /// <param name="option">The option to get a value from.</param>
+        /// <param name="getter">Function used to get the value if the option is the Some case.</param>
+        /// <param name="whenNone">Value to return if the option is the None case.</param>
+        public static TOut GetOrDefault<TIn, TOut>(this Option<TIn> option, Func<TIn, TOut> getter, TOut whenNone = default(TOut)) =>
             option.IsSome ? getter(option.Value) : whenNone;
 
         /* Side Effects */
