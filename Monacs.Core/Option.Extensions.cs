@@ -226,6 +226,14 @@ namespace Monacs.Core
 
         /* Side Effects */
 
+        /// <summary>
+        /// Performs the <paramref name="action"/> with the value of the <paramref name="option"/> if it's Some case.
+        /// If the option is None case nothing happens.
+        /// In both cases unmodified option is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the option.</typeparam>
+        /// <param name="option">The option to check for a value.</param>
+        /// <param name="action">Function executed if the option is Some case.</param>
         public static Option<T> Do<T>(this Option<T> option, Action<T> action)
         {
             if (option.IsSome)
@@ -233,6 +241,14 @@ namespace Monacs.Core
             return option;
         }
 
+        /// <summary>
+        /// Performs the <paramref name="action"/> if the <paramref name="option"/> is None case.
+        /// If the option is Some case nothing happens.
+        /// In both cases unmodified option is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the option.</typeparam>
+        /// <param name="option">The option to check for a value.</param>
+        /// <param name="action">Function executed if the option is None case.</param>
         public static Option<T> DoWhenNone<T>(this Option<T> option, Action action)
         {
             if (option.IsNone)
