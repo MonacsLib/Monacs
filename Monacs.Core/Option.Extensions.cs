@@ -258,14 +258,34 @@ namespace Monacs.Core
 
         /* Collections */
 
+        /// <summary>
+        /// Returns the collection of values of elements from the <see cref="Option{T}"/> collection
+        /// that are Some case (so contain some value).
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the option.</typeparam>
+        /// <param name="items">Collection to filter out and map.</param>
         public static IEnumerable<T> Choose<T>(this IEnumerable<Option<T>> items) =>
             items.Where(i => i.IsSome).Select(i => i.Value);
 
+        /// <summary>
+        /// If all elements in the input collection are Some case, returns the Some of the collection of underlying values.
+        /// Otherwise returns None.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the option.</typeparam>
+        /// <param name="items">Collection to check and map.</param>
         public static Option<IEnumerable<T>> Sequence<T>(this IEnumerable<Option<T>> items) =>
             items.Any(i => i.IsNone)
             ? None<IEnumerable<T>>()
             : Some(items.Select(i => i.Value));
 
+        /// <summary>
+        /// Tries to find the first element of the <paramref name="items"/> collection matching the <paramref name="predicate"/>.
+        /// If element is found, returns Some with the value of that element.
+        /// Otherwise returns None.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the collection and returned option.</typeparam>
+        /// <param name="items">Collection to search in.</param>
+        /// <param name="predicate">Function that checks if given element matches desired condition.</param>
         public static Option<T> TryFind<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
             if (items != null)
@@ -275,6 +295,13 @@ namespace Monacs.Core
             return None<T>();
         }
 
+        /// <summary>
+        /// Tries to get the the element in the <paramref name="items"/> collection.
+        /// If element is found, returns Some with the value of that element.
+        /// Otherwise returns None.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the collection and the returned option.</typeparam>
+        /// <param name="items">Collection to search in.</param>
         public static Option<T> TryFirst<T>(this IEnumerable<T> items)
         {
             if (items == null) return None<T>();
@@ -289,6 +316,14 @@ namespace Monacs.Core
             return None<T>();
         }
 
+        /// <summary>
+        /// Tries to get the element of the <paramref name="items"/> collection at the posision given by the <paramref name="index"/> parameter.
+        /// If element is found, returns Some with the value of that element.
+        /// Otherwise returns None.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the collection and returned option.</typeparam>
+        /// <param name="items">Collection to search in.</param>
+        /// <param name="index">Position at which to look for an element.</param>
         public static Option<T> TryElementAt<T>(this IEnumerable<T> items, int index)
         {
             if (items == null || index < 0) return None<T>();
