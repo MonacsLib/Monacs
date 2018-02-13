@@ -171,13 +171,31 @@ namespace Monacs.Core
 
         /* Bind */
 
-        public static Option<T2> Bind<T1, T2>(this Option<T1> option, Func<T1, Option<T2>> binder) =>
-            option.IsSome ? binder(option.Value) : None<T2>();
+        /// <summary>
+        /// Transforms the <paramref name="option"/> into another <see cref="Option{T}"/> using the <paramref name="binder"/> function.
+        /// If the input option is Some, returns the value of the binder call (which is <typeparamref name="TOut"/> option).
+        /// Otherwise returns None case of the <typeparamref name="TOut"/> option.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the input option.</typeparam>
+        /// <typeparam name="TOut">Type of the value in the returned option.</typeparam>
+        /// <param name="option">The option to bind with.</param>
+        /// <param name="binder">Function called with the input option value if it's Some case.</param>
+        public static Option<TOut> Bind<TIn, TOut>(this Option<TIn> option, Func<TIn, Option<TOut>> binder) =>
+            option.IsSome ? binder(option.Value) : None<TOut>();
 
         /* Map */
 
-        public static Option<T2> Map<T1, T2>(this Option<T1> option, Func<T1, T2> mapper) =>
-            option.IsSome ? Some(mapper(option.Value)) : None<T2>();
+        /// <summary>
+        /// Maps the value of the <paramref name="option"/> into another <see cref="Option{T}"/> using the <paramref name="mapper"/> function.
+        /// If the input option is Some, returns the Some case with the value of the mapper call (which is <typeparamref name="TOut"/>).
+        /// Otherwise returns None case of the <typeparamref name="TOut"/> option.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the input option.</typeparam>
+        /// <typeparam name="TOut">Type of the value in the returned option.</typeparam>
+        /// <param name="option">The option to map on.</param>
+        /// <param name="mapper">Function called with the input option value if it's Some case.</param>
+        public static Option<TOut> Map<TIn, TOut>(this Option<TIn> option, Func<TIn, TOut> mapper) =>
+            option.IsSome ? Some(mapper(option.Value)) : None<TOut>();
 
         /* Getters */
 
