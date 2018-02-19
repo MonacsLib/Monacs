@@ -33,6 +33,10 @@ namespace Monacs.Core.Tuples
                       ? ok(result.Value.fst, result.Value.snd)
                       : error(result.Error);
 
+        public static TVal MatchTo2<TFst, TSnd, TVal>(this Result<(TFst fst, TSnd snd)> result, TVal some, TVal none) =>
+            result.IsOk ? some : none;
+
+
         /* Match3 */
 
         public static TVal Match3<TFst, TSnd, TTrd, TVal>(this Result<(TFst fst, TSnd snd, TTrd trd)> result, Func<TFst, TSnd, TTrd, TVal> ok, Func<ErrorDetails, TVal> error) =>
