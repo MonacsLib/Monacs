@@ -411,3 +411,28 @@ module TryCatch =
         let error = Errors.Error("Oh no!")
         let result = Result.Error<int>(error)
         Result.TryCatch(result, (fun v -> v.ToString()), (fun _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
+
+module ResultMatch2 =
+
+    open Monacs.Core.Tuples;
+    
+    let testTuple = ("Meaning of Life", 42).ToValueTuple()
+    let errorMessage = "Some error message."
+
+    [<Fact>]
+    let ``Match<TFst, TSnd> returns result of ok when value is Ok<(TFst, TSnd)>`` () =
+        let result = Result.Ok(testTuple)
+        let expected = testTuple.ToString()
+        Result.Match2(result,
+                      ok = (fun a b -> (a,b).ToString()),
+                      error = (fun e -> e.Message.Value))
+        |> should equal expected
+
+    [<Fact>]
+    let ``Match<TFst, TSnd> returns result of error when value is Error<TFst, TSnd>`` () =
+        let error = Errors.Error(errorMessage)
+        let value = Result.Error<ValueTuple<int, string>>(error)
+        Result.Match2(value,
+                      ok = (fun a b -> (a, b).ToString()),
+                      error = (fun e -> e.Message.Value))
+        |> should equal errorMessage
