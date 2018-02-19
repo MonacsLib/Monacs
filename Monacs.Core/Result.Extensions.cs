@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +24,7 @@ namespace Monacs.Core
         /// <typeparam name="T">Desired type parameter for <see cref="Result{T}"/> type.</typeparam>
         /// <param name="error">Details of the error.</param>
         public static Result<T> Error<T>(ErrorDetails error) => new Result<T>(error);
-
+        
         /* Converters */
 
         /// <summary>
