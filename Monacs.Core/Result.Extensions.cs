@@ -201,15 +201,55 @@ namespace Monacs.Core
 
         /* TryGetResult */
 
-        public static Result<TValue> TryGetResult<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, ErrorDetails error) =>
-            dict.TryGetValue(key, out TValue value) ? Ok(value) : Error<TValue>(error);
+        /// <summary>
+        /// Tries to get the element with the given <paramref name="key"/> from the <paramref name="dictionary"/>.
+        /// If the value is found, returns Ok case of the <see cref="Result{T}"/> type with the value from the dictionary.
+        /// Otherwise returns Error case of the <see cref="Result{T}"/> type.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key in the dictionary.</typeparam>
+        /// <typeparam name="TValue">Type of the value in the dictionary.</typeparam>
+        /// <param name="dictionary">The dictionary to search in.</param>
+        /// <param name="key">The key to look for.</param>
+        /// <param name="error">Details of the error if the key is not found.</param>
+        public static Result<TValue> TryGetResult<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, ErrorDetails error) =>
+            dictionary.TryGetValue(key, out TValue value) ? Ok(value) : Error<TValue>(error);
 
-        public static Result<TValue> TryGetResult<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, Func<TKey, ErrorDetails> errorFunc) =>
-            dict.TryGetValue(key, out TValue value) ? Ok(value) : Error<TValue>(errorFunc(key));
+        /// <summary>
+        /// Tries to get the element with the given <paramref name="key"/> from the <paramref name="dictionary"/>.
+        /// If the value is found, returns Ok case of the <see cref="Result{T}"/> type with the value from the dictionary.
+        /// Otherwise returns Error case of the <see cref="Result{T}"/> type.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key in the dictionary.</typeparam>
+        /// <typeparam name="TValue">Type of the value in the dictionary.</typeparam>
+        /// <param name="dictionary">The dictionary to search in.</param>
+        /// <param name="key">The key to look for.</param>
+        /// <param name="errorFunc">Function yielding details of the error if the key is not found.</param>
+        public static Result<TValue> TryGetResult<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, ErrorDetails> errorFunc) =>
+            dictionary.TryGetValue(key, out TValue value) ? Ok(value) : Error<TValue>(errorFunc(key));
 
+        /// <summary>
+        /// Tries to get the elements with the given <paramref name="key"/> from the <paramref name="lookup"/>.
+        /// If any value is found, returns Ok case of the <see cref="Result{T}"/> type with the values from the lookup.
+        /// Otherwise returns Error case of the <see cref="Result{T}"/> type.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key in the lookup.</typeparam>
+        /// <typeparam name="TValue">Type of the value in the lookup.</typeparam>
+        /// <param name="lookup">The lookup to search in.</param>
+        /// <param name="key">The key to look for.</param>
+        /// <param name="error">Details of the error if the key is not found.</param>
         public static Result<IEnumerable<TValue>> TryGetResult<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key, ErrorDetails error) =>
             lookup.Contains(key) ? Ok(lookup[key]) : Error<IEnumerable<TValue>>(error);
 
+        /// <summary>
+        /// Tries to get the elements with the given <paramref name="key"/> from the <paramref name="lookup"/>.
+        /// If any value is found, returns Ok case of the <see cref="Result{T}"/> type with the values from the lookup.
+        /// Otherwise returns Error case of the <see cref="Result{T}"/> type.
+        /// </summary>
+        /// <typeparam name="TKey">Type of the key in the lookup.</typeparam>
+        /// <typeparam name="TValue">Type of the value in the lookup.</typeparam>
+        /// <param name="lookup">The lookup to search in.</param>
+        /// <param name="key">The key to look for.</param>
+        /// <param name="errorFunc">Function yielding details of the error if the key is not found.</param>
         public static Result<IEnumerable<TValue>> TryGetResult<TKey, TValue>(this ILookup<TKey, TValue> lookup, TKey key, Func<TKey, ErrorDetails> errorFunc) =>
             lookup.Contains(key) ? Ok(lookup[key]) : Error<IEnumerable<TValue>>(errorFunc(key));
 
