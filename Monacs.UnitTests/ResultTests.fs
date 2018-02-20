@@ -412,7 +412,6 @@ module TryCatch =
         let result = Result.Error<int>(error)
         Result.TryCatch(result, (fun v -> v.ToString()), (fun _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
 
-
 open Monacs.Core.Tuples;
 
 module ResultMatch2 =
@@ -449,7 +448,6 @@ module ResultMatch2 =
         let result = Result.Error<ValueTuple<int, string>>(error)
         Result.MatchTo2(result, "Success", "Failure") |> should equal "Failure"
 
-
 module ResultMatch3 =
     
     let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
@@ -472,3 +470,46 @@ module ResultMatch3 =
                       ok = (fun a b c -> (a, b).ToString()),
                       error = (fun e -> e.Message.Value))
         |> should equal errorMessage
+
+module ``Side effects (2 value tuple)`` =
+
+    let testTuple = ("Meaning of Life", 42).ToValueTuple()
+    let errorMessage = "Some error message."
+
+    [<Fact>]
+    let ``Do<TFst, TSnd> returns value and executes action when value is Ok<TFst, TSnd>`` () =
+        let value = Result.Ok(testTuple)
+        let expected = testTuple.ToString()
+        let mutable result = ""
+        Result.Do2(value, (fun a b -> result <- (a, b).ToValueTuple().ToString())) |> should equal value
+        result |> should equal expected
+
+    [<Fact>]
+    let ``Do<TFst, TSnd> returns value and doesn't execute action when value is Error<TFst, TSnd>`` () =
+        let value = Result.Error<ValueTuple<string, int>>(Errors.Error())
+        let expected = "expected"
+        let mutable result = expected
+        Result.Do2(value, (fun a b -> result <- errorMessage)) |> should equal value
+        result |> should equal expected
+        
+module ``Side effects (3 value tuple)`` =
+
+    let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
+    let errorMessage = "Some error message."
+
+    [<Fact>]
+    let ``Do<TFst, TSnd, TTrd> returns value and executes action when value is Ok<TFst, TSnd, TTrd>`` () =
+        let value = Result.Ok(testTuple)
+        let expected = testTuple.ToString()
+        let mutable result = ""
+        Result.Do3(value, (fun a b c -> result <- (a, b, c).ToValueTuple().ToString())) |> should equal value
+        result |> should equal expected
+
+    [<Fact>]
+    let ``Do<TFst, TSnd, TTrd> returns value and doesn't execute action when value is Error<TFst, TSnd, TTrd>`` () =
+        let value = Result.Error<ValueTuple<string, int, double>>(Errors.Error())
+        let expected = "expected"
+        let mutable result = expected
+        Result.Do3(value, (fun a b c -> result <- errorMessage)) |> should equal value
+        result |> should equal expected
+        
