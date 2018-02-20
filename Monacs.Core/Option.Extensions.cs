@@ -211,7 +211,7 @@ namespace Monacs.Core
             option.IsSome ? option.Value : whenNone;
 
         /// <summary>
-        /// Gets the value of the <paramref name="option"/> using the <paramref name="getter"/> function if it's Some case.
+        /// Gets the value from the <paramref name="option"/> using the <paramref name="getter"/> function if it's Some case.
         /// If the option is None case returns value specified by the <paramref name="whenNone"/> parameter;
         /// if the parameter is not set returns the default value of the type <typeparamref name="TOut"/>.
         /// </summary>

@@ -255,32 +255,98 @@ namespace Monacs.Core
 
         /* Match */
 
+        /// <summary>
+        /// Does the pattern matching on the <see cref="Result{T}"/> type.
+        /// If the <paramref name="result"/> is Ok, calls <paramref name="ok"/> function
+        /// with the value from the result as a parameter and returns its result.
+        /// Otherwise calls <paramref name="error"/> function and returns its result.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the result.</typeparam>
+        /// <typeparam name="TOut">Type of the returned value.</typeparam>
+        /// <param name="result">The result to match on.</param>
+        /// <param name="ok">Function called for the Ok case.</param>
+        /// <param name="error">Function called for the Error case.</param>
         public static TOut Match<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> ok, Func<ErrorDetails, TOut> error) =>
             result.IsOk ? ok(result.Value) : error(result.Error);
 
+        /// <summary>
+        /// Does the pattern matching on the <see cref="Result{T}"/> type.
+        /// If the <paramref name="result"/> is Ok, returns <paramref name="ok"/> value.
+        /// Otherwise returns <paramref name="error"/> value.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the result.</typeparam>
+        /// <typeparam name="TOut">Type of the returned value.</typeparam>
+        /// <param name="result">The result to match on.</param>
+        /// <param name="ok">Value returned for the Ok case.</param>
+        /// <param name="error">Value returned for the Error case.</param>
         public static TOut MatchTo<TIn, TOut>(this Result<TIn> result, TOut ok, TOut error) =>
             result.IsOk ? ok : error;
 
         /* Bind */
 
+        /// <summary>
+        /// Transforms the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="binder"/> function.
+        /// If the input result is Ok, returns the value of the binder call (which is <see cref="Result{T}"/> of <typeparamref name="TOut"/>).
+        /// Otherwise returns Error case of the Result of <typeparamref name="TOut"/>.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the input result.</typeparam>
+        /// <typeparam name="TOut">Type of the value in the returned result.</typeparam>
+        /// <param name="result">The result to bind with.</param>
+        /// <param name="binder">Function called with the input result value if it's Ok case.</param>
         public static Result<TOut> Bind<TIn, TOut>(this Result<TIn> result, Func<TIn, Result<TOut>> binder) =>
             result.IsOk ? binder(result.Value) : Error<TOut>(result.Error);
 
         /* Map */
 
+        /// <summary>
+        /// Maps the value of the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="mapper"/> function.
+        /// If the input result is Ok, returns the Ok case with the value of the mapper call (which is <typeparamref name="TOut"/>).
+        /// Otherwise returns Error case of the Result of <typeparamref name="TOut"/>.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the input result.</typeparam>
+        /// <typeparam name="TOut">Type of the value in the returned result.</typeparam>
+        /// <param name="result">The result to map on.</param>
+        /// <param name="mapper">Function called with the input result value if it's Ok case.</param>
         public static Result<TOut> Map<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> mapper) =>
             result.IsOk ? Ok(mapper(result.Value)) : Error<TOut>(result.Error);
 
         /* Getters */
 
+        /// <summary>
+        /// Gets the value of the <paramref name="result"/> if it's Ok case.
+        /// If the result is Error case returns value specified by the <paramref name="whenError"/> parameter;
+        /// if the parameter is not set returns the default value of the type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="result">The result to get a value from.</param>
+        /// <param name="whenError">Value to return if the result is the Error case.</param>
         public static T GetOrDefault<T>(this Result<T> result, T whenError = default(T)) =>
             result.IsOk ? result.Value : whenError;
 
+        /// <summary>
+        /// Gets the value from the <paramref name="result"/> using the <paramref name="getter"/> function if it's Ok case.
+        /// If the result is Error case returns value specified by the <paramref name="whenError"/> parameter;
+        /// if the parameter is not set returns the default value of the type <typeparamref name="TOut"/>.
+        /// </summary>
+        /// <remarks>Effectively the combination of <see cref="Result.Map{TIn, TOut}(Result{TIn}, Func{TIn, TOut})"/> and <see cref="Result.GetOrDefault{T}(Result{T}, T)"/> calls.</remarks>
+        /// <typeparam name="TIn">Type of the value in the result.</typeparam>
+        /// <typeparam name="TOut">Type of the return value.</typeparam>
+        /// <param name="result">The result to get a value from.</param>
+        /// <param name="getter">Function used to get the value if the result is the Ok case.</param>
+        /// <param name="whenError">Value to return if the result is the Error case.</param>
         public static TOut GetOrDefault<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> getter, TOut whenError = default(TOut)) =>
             result.IsOk ? getter(result.Value) : whenError;
 
         /* Side Effects */
 
+        /// <summary>
+        /// Performs the <paramref name="action"/> with the value of the <paramref name="result"/> if it's Ok case.
+        /// If the result is Error case nothing happens.
+        /// In both cases unmodified result is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="result">The result to check for a value.</param>
+        /// <param name="action">Function executed if the result is Ok case.</param>
         public static Result<T> Do<T>(this Result<T> result, Action<T> action)
         {
             if (result.IsOk)
@@ -288,6 +354,14 @@ namespace Monacs.Core
             return result;
         }
 
+        /// <summary>
+        /// Performs the <paramref name="action"/> if the <paramref name="result"/> is Error case.
+        /// If the result is Ok case nothing happens.
+        /// In both cases unmodified result is returned.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="result">The result to check for a value.</param>
+        /// <param name="action">Function executed if the result is Error case.</param>
         public static Result<T> DoWhenError<T>(this Result<T> result, Action<ErrorDetails> action)
         {
             if (result.IsError)
@@ -297,12 +371,30 @@ namespace Monacs.Core
 
         /* Collections */
 
+        /// <summary>
+        /// Returns the collection of values of elements from the <see cref="Result{T}"/> collection
+        /// that are Ok case.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="items">Collection to filter out and map.</param>
         public static IEnumerable<T> Choose<T>(this IEnumerable<Result<T>> items) =>
             items.Where(i => i.IsOk).Select(i => i.Value);
 
+        /// <summary>
+        /// Returns the collection of values of elements from the <see cref="Result{T}"/> collection
+        /// that are Error case.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="items">Collection to filter out and map.</param>
         public static IEnumerable<ErrorDetails> ChooseErrors<T>(this IEnumerable<Result<T>> items) =>
             items.Where(r => r.IsError).Select(x => x.Error);
 
+        /// <summary>
+        /// If all elements in the input collection are Ok case, returns the Ok of the collection of underlying values.
+        /// Otherwise returns Error from the first element.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="items">Collection to check and map.</param>
         public static Result<IEnumerable<T>> Sequence<T>(this IEnumerable<Result<T>> items) =>
             items.Any(i => i.IsError)
             ? Error<IEnumerable<T>>(items.First(i => i.IsError).Error)
@@ -310,6 +402,14 @@ namespace Monacs.Core
 
         /* TryCatch */
 
+        /// <summary>
+        /// Tries to execute <paramref name="func"/>.
+        /// If the execution completes without exception, returns Ok with the function result.
+        /// Otherwise returns Error with details generated by <paramref name="errorHandler"/> based on the thrown exception.
+        /// </summary>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="func">Function to execute.</param>
+        /// <param name="errorHandler">Function that generates error details in case of exception.</param>
         public static Result<T> TryCatch<T>(Func<T> func, Func<Exception, ErrorDetails> errorHandler)
         {
             try
@@ -323,6 +423,17 @@ namespace Monacs.Core
             }
         }
 
+        /// <summary>
+        /// Tries to execute <paramref name="func"/> with the value from the <paramref name="result"/> as an input.
+        /// If the execution completes without exception, returns Ok with the function result.
+        /// Otherwise returns Error with details generated by <paramref name="errorHandler"/> based on the thrown exception.
+        /// If the <paramref name="result"/> is Error function is not executed and the Error is returned.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the input result.</typeparam>
+        /// <typeparam name="TOut">Type of the value in the output result.</typeparam>
+        /// <param name="result">Result to take the value from.</param>
+        /// <param name="func">Function to execute.</param>
+        /// <param name="errorHandler">Function that generates error details in case of exception.</param>
         public static Result<TOut> TryCatch<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> func, Func<TIn, Exception, ErrorDetails> errorHandler) =>
             result.Bind(value => Result.TryCatch(() => func(value), e => errorHandler(value, e)));
     }
