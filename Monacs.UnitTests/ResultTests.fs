@@ -512,4 +512,30 @@ module ``Side effects (3 value tuple)`` =
         let mutable result = expected
         Result.Do3(value, (fun a b c -> result <- errorMessage)) |> should equal value
         result |> should equal expected
-        
+
+module TryCatch2 =
+
+    let testTuple = ("Meaning of Life", 42).ToValueTuple()
+    let errorMessage = "Some error message."
+    
+    [<Fact>]
+    let ``TryCatch<TValue, TFst, TSnd> returns Ok<TValue> when previous result is Ok<(TFst, TSnd)> and function call doesn't throw`` () =
+        let result = Result.Ok(testTuple)
+        Result.TryCatch2(result, (fun a b -> (a, b).ToValueTuple()), (fun _ _ _ -> Errors.Error())) |> should equal (Result.Ok(testTuple))
+
+    [<Fact>]
+    let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Ok<TFst, TSnd> and function call throws`` () =
+        let message = errorMessage
+        let result = Result.Ok(testTuple)
+        Result.TryCatch2(result,
+                         tryFunc = (fun _ _ -> raise(Exception(message))),
+                         errorHandler = (fun a b e -> Errors.Error((a, b).ToValueTuple().ToString() + e.Message)))
+        |> should equal (Result.Error(Errors.Error(testTuple.ToString() + message)))
+
+    [<Fact>]
+    let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Error<TFst, TSnd>`` () =
+        let error = Errors.Error(errorMessage)
+        let result = Result.Error<ValueTuple<string, int>>(error)
+        Result.TryCatch2(result,
+                         tryFunc = (fun _ _ -> "This should omitted."),
+                         errorHandler = (fun _ _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
