@@ -59,11 +59,13 @@ namespace Monacs.Core
         /// </summary>
         public bool IsError => !IsOk;
 
+        /// <summary>
+        /// Creates a string representation of the <see cref="Result{T}"/>.
+        /// </summary>
         public override string ToString() =>
             IsOk
             ? $"Ok<{typeof(T).Name}>({Value})"
             : $"Error<{typeof(T).Name}>({Error})";
-
 
         /* Equality */
 

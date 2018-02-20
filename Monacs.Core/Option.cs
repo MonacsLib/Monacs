@@ -39,6 +39,9 @@ namespace Monacs.Core
         /// </summary>
         public bool IsNone => !IsSome;
 
+        /// <summary>
+        /// Creates a string representation of the <see cref="Option{T}"/>.
+        /// </summary>
         public override string ToString() =>
             IsSome
             ? $"Some({Value})"
