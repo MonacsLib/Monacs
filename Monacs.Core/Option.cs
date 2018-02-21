@@ -6,7 +6,7 @@ namespace Monacs.Core
     /// <summary>
     /// Encapsulates optional value.
     /// It is recommended to use provided extension methods and not to use properties of the <see cref="Option{T}"/> directly.
-    /// <para />The Option can contain a value of a type <see cref="T"/> and it's called Some in such case.
+    /// <para />The Option can contain a value of a type <typeparamref name="T"/> and it's called Some in such case.
     /// <para />If no value is encapsulated it's called None.
     /// </summary>
     /// <typeparam name="T">Type of encapsulated value.</typeparam>
@@ -47,15 +47,35 @@ namespace Monacs.Core
             ? $"Some({Value})"
             : $"None<{typeof(T).Name}>";
 
+        /// <summary>
+        /// Compares two instances of the <see cref="Option{T}"/>.
+        /// Two options are equal if both are of the same type, the same case
+        /// and the underlying values are equal.
+        /// </summary>
+        /// <param name="other">Option to compare with</param>
         public bool Equals(Option<T> other) =>
             (IsNone && other.IsNone) || (IsSome && other.IsSome && EqualityComparer<T>.Default.Equals(Value, other.Value));
 
+        /// <summary>
+        /// Compares <see cref="Option{T}"/> with the value of type <typeparamref name="T"/>.
+        /// Option is equal to the value of the underlying type if it's Some case
+        /// and encapsulated value is equal to <paramref name="other"/> value.
+        /// </summary>
+        /// <param name="other">Option to compare with</param>
         public bool Equals(T other) =>
             IsSome && EqualityComparer<T>.Default.Equals(Value, other);
 
+        /// <summary>
+        /// Compares the <see cref="Option{T}"/> with other object.
+        /// Option is only equal to other option given the conditions described in <see cref="Option{T}.Equals(Option{T})"/>.
+        /// </summary>
+        /// <param name="obj">Object to compare with</param>
         public override bool Equals(object obj) =>
             obj is Option<T> && Equals((Option<T>)obj);
 
+        /// <summary>
+        /// Computes the hashcode for the <see cref="Option{T}"/> instance.
+        /// </summary>
         public override int GetHashCode()
         {
             unchecked

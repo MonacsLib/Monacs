@@ -6,7 +6,7 @@ namespace Monacs.Core
     /// <summary>
     /// Represents the result of the operation that may succeed or fail.
     /// It is recommended to use provided extension methods and not to use properties of the <see cref="Result{T}"/> directly.
-    /// <para />If the operation succeeded it will contain a value of a type <see cref="T"/> and it's called Ok in such case.
+    /// <para />If the operation succeeded it will contain a value of a type <typeparamref name="T"/> and it's called Ok in such case.
     /// <para />If the operation failed it will contain error information of type <see cref="ErrorDetails"/> and it's called Error.
     /// </summary>
     /// <typeparam name="T">Expected return value type.</typeparam>
@@ -69,13 +69,27 @@ namespace Monacs.Core
 
         /* Equality */
 
+        /// <summary>
+        /// Compares two instances of the <see cref="Result{T}"/>.
+        /// Two results are equal if both are of the same type, the same case
+        /// and the underlying values (of errors) are equal.
+        /// </summary>
+        /// <param name="other">Result to compare with</param>
         public bool Equals(Result<T> other) =>
             (IsError && other.IsError && EqualityComparer<ErrorDetails>.Default.Equals(Error, other.Error))
             || (IsOk && other.IsOk && EqualityComparer<T>.Default.Equals(Value, other.Value));
 
+        /// <summary>
+        /// Compares the <see cref="Result{T}"/> with other object.
+        /// Result is only equal to other result given the conditions described in <see cref="Result{T}.Equals(Result{T})"/>.
+        /// </summary>
+        /// <param name="obj">Object to compare with</param>
         public override bool Equals(object obj) =>
             obj is Result<T> && Equals((Result<T>)obj);
 
+        /// <summary>
+        /// Computes the hashcode for the <see cref="Result{T}"/> instance.
+        /// </summary>
         public override int GetHashCode()
         {
             unchecked
