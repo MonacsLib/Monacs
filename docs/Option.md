@@ -88,6 +88,8 @@ You can also reimplement it without option at all, for example like this:
 
 This seems like a good option, especially with null propagation operator in C# being very convenient, but one thing you have to remember is that it doesn't solve the problem of null. It only moves the responsibility of handling it from one piece of code to another.
 
+## Summary
+
 As you can see, option type has quite a few benefits:
 
 - explicity - you state in a very obvious way that something may be not present
