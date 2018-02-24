@@ -59,41 +59,5 @@ namespace Monacs.Core.Tuples
             return result;
         }
 
-        /* Try/Catch */
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TValue"></typeparam>
-        /// <typeparam name="TFst"></typeparam>
-        /// <typeparam name="TSnd"></typeparam>
-        /// <param name="result"></param>
-        /// <param name="tryFunc"></param>
-        /// <param name="errorHandler"></param>
-        /// <returns></returns>
-        public static Result<TValue> TryCatch2<TValue, TFst, TSnd>(
-            this Result<(TFst fst, TSnd snd)> result,
-                 Func<TFst, TSnd, TValue> tryFunc,
-                 Func<TFst, TSnd, Exception, ErrorDetails> errorHandler) =>
-                    result.Bind(value => TryCatch(func: () => tryFunc(value.fst, value.snd),
-                                                  errorHandler: err => errorHandler(value.fst, value.snd, err)));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TValue"></typeparam>
-        /// <typeparam name="TFst"></typeparam>
-        /// <typeparam name="TSnd"></typeparam>
-        /// <typeparam name="TTrd"></typeparam>
-        /// <param name="result"></param>
-        /// <param name="tryFunc"></param>
-        /// <param name="errorHandler"></param>
-        /// <returns></returns>
-        public static Result<TValue> TryCatch3<TValue, TFst, TSnd, TTrd>(
-            this Result<(TFst fst, TSnd snd, TTrd trd)> result,
-                 Func<TFst, TSnd, TTrd, TValue> tryFunc,
-                 Func<TFst, TSnd, TTrd, Exception, ErrorDetails> errorHandler) =>
-                     result.Bind(value => TryCatch(func: () => tryFunc(value.fst, value.snd, value.trd),
-                                                   errorHandler: err => errorHandler(value.fst, value.snd, value.trd, err)));
     }
 }
