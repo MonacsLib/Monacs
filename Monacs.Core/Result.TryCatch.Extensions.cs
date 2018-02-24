@@ -37,38 +37,42 @@ namespace Monacs.Core
         public static Result<TValue> TryCatch<TArg, TValue>(this Result<TArg> result, Func<TArg, TValue> func, Func<TArg, Exception, ErrorDetails> errorHandler) =>
             result.Bind(value => Result.TryCatch(() => func(value), e => errorHandler(value, e)));
 
+
+        /* Tuple variations */
+
         /// <summary>
         /// Invokes function in try/catch block and returns its result.
         /// </summary>
         /// <typeparam name="TValue">Type of value returned by invoked function.</typeparam>
-        /// <typeparam name="TFst">Type of first value in function tuple argument.</typeparam>
-        /// <typeparam name="TSnd">Type of second value in function tuple argument.</typeparam>
+        /// <typeparam name="TFst">Type of first value in the function tuple argument.</typeparam>
+        /// <typeparam name="TSnd">Type of second value in the function tuple argument.</typeparam>
         /// <param name="result">Result of previous operation.</param>
         /// <param name="tryFunc">The function to be invoked in 'try' block.</param>
         /// <param name="errorHandler">Handler invoked in 'catch' block on any raised exception.</param>
         /// <returns><see cref="Result{TValue}"/> of invoked function in try block or <see cref="ErrorDetails"/> if any exception occurs.</returns>
         public static Result<TValue> TryCatch2<TValue, TFst, TSnd>(
             this Result<(TFst fst, TSnd snd)> result,
-            Func<TFst, TSnd, TValue> tryFunc,
-            Func<TFst, TSnd, Exception, ErrorDetails> errorHandler) =>
-            result.Bind(value => TryCatch(func: () => tryFunc(value.fst, value.snd),
-                        errorHandler: err => errorHandler(value.fst, value.snd, err)));
+                 Func<TFst, TSnd, TValue> tryFunc,
+                 Func<TFst, TSnd, Exception, ErrorDetails> errorHandler) =>
+                     result.Bind(value => TryCatch(func: () => tryFunc(value.fst, value.snd),
+                                 errorHandler: err => errorHandler(value.fst, value.snd, err)));
 
         /// <summary>
         /// Invokes function in try/catch block and returns its result.
         /// </summary>
         /// <typeparam name="TValue">Type of value returned by invoked function.</typeparam>
-        /// <typeparam name="TFst">Type of first value in function tuple argument.</typeparam>
-        /// <typeparam name="TSnd">Type of second value in function tuple argument.</typeparam>
+        /// <typeparam name="TFst">Type of first value in the function tuple argument.</typeparam>
+        /// <typeparam name="TSnd">Type of second value in the function tuple argument.</typeparam>
+        /// <typeparam name="TTrd">Type of third value in the function tuple argument.</typeparam>
         /// <param name="result">Result of previous operation.</param>
         /// <param name="tryFunc">The function to be invoked in 'try' block.</param>
         /// <param name="errorHandler">Handler invoked in 'catch' block on any raised exception.</param>
         /// <returns><see cref="Result{TValue}"/> of invoked function in try block or <see cref="ErrorDetails"/> if any exception occurs.</returns>
         public static Result<TValue> TryCatch3<TValue, TFst, TSnd, TTrd>(
             this Result<(TFst fst, TSnd snd, TTrd trd)> result,
-            Func<TFst, TSnd, TTrd, TValue> tryFunc,
-            Func<TFst, TSnd, TTrd, Exception, ErrorDetails> errorHandler) =>
-            result.Bind(value => TryCatch(func: () => tryFunc(value.fst, value.snd, value.trd),
-                        errorHandler: err => errorHandler(value.fst, value.snd, value.trd, err)));
+                 Func<TFst, TSnd, TTrd, TValue> tryFunc,
+                 Func<TFst, TSnd, TTrd, Exception, ErrorDetails> errorHandler) =>
+                     result.Bind(value => TryCatch(func: () => tryFunc(value.fst, value.snd, value.trd),
+                                 errorHandler: err => errorHandler(value.fst, value.snd, value.trd, err)));
     }
 }
