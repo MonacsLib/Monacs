@@ -266,9 +266,6 @@ namespace Monacs.Core
         /// <param name="result">The result to match on.</param>
         /// <param name="ok">Function called for the Ok case.</param>
         /// <param name="error">Function called for the Error case.</param>
-        public static TOut Match<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> ok, Func<ErrorDetails, TOut> error) =>
-            result.IsOk ? ok(result.Value) : error(result.Error);
-
         /// <summary>
         /// Does the pattern matching on the <see cref="Result{T}"/> type.
         /// If the <paramref name="result"/> is Ok, returns <paramref name="ok"/> value.
@@ -279,9 +276,6 @@ namespace Monacs.Core
         /// <param name="result">The result to match on.</param>
         /// <param name="ok">Value returned for the Ok case.</param>
         /// <param name="error">Value returned for the Error case.</param>
-        public static TOut MatchTo<TIn, TOut>(this Result<TIn> result, TOut ok, TOut error) =>
-            result.IsOk ? ok : error;
-
         /// <summary>
         /// Transforms the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="binder"/> function.
         /// If the input result is Ok, returns the value of the binder call (which is <see cref="Result{T}"/> of <typeparamref name="TOut"/>).
