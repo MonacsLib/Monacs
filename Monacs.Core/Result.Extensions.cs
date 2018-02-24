@@ -336,9 +336,7 @@ namespace Monacs.Core
         /// <param name="whenError">Value to return if the result is the Error case.</param>
         public static TOut GetOrDefault<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> getter, TOut whenError = default(TOut)) =>
             result.IsOk ? getter(result.Value) : whenError;
-
-        /* Side Effects */
-
+        
         /// <summary>
         /// Performs the <paramref name="action"/> with the value of the <paramref name="result"/> if it's Ok case.
         /// If the result is Error case nothing happens.
@@ -347,13 +345,6 @@ namespace Monacs.Core
         /// <typeparam name="T">Type of the value in the result.</typeparam>
         /// <param name="result">The result to check for a value.</param>
         /// <param name="action">Function executed if the result is Ok case.</param>
-        public static Result<T> Do<T>(this Result<T> result, Action<T> action)
-        {
-            if (result.IsOk)
-                action(result.Value);
-            return result;
-        }
-
         /// <summary>
         /// Performs the <paramref name="action"/> if the <paramref name="result"/> is Error case.
         /// If the result is Ok case nothing happens.
@@ -362,12 +353,6 @@ namespace Monacs.Core
         /// <typeparam name="T">Type of the value in the result.</typeparam>
         /// <param name="result">The result to check for a value.</param>
         /// <param name="action">Function executed if the result is Error case.</param>
-        public static Result<T> DoWhenError<T>(this Result<T> result, Action<ErrorDetails> action)
-        {
-            if (result.IsError)
-                action(result.Error);
-            return result;
-        }
 
         /* Collections */
 
@@ -399,7 +384,6 @@ namespace Monacs.Core
             items.Any(i => i.IsError)
             ? Error<IEnumerable<T>>(items.First(i => i.IsError).Error)
             : Ok(items.Select(i => i.Value));
-
         /// <summary>
         /// Tries to execute <paramref name="func"/>.
         /// If the execution completes without exception, returns Ok with the function result.
