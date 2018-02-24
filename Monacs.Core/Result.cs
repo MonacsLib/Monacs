@@ -32,7 +32,7 @@ namespace Monacs.Core
         /// <para /> Use extension methods to access the value instead, like:
         /// <para /> * <see cref="Result.GetOrDefault{T}"/>,
         /// <para /> * <see cref="Result.Map{TIn,TOut}"/>,
-        /// <para /> * <see cref="Result.Bind{TIn,TOut}"/>,
+        /// <para /> * <see cref="Result.Bind{TOut}"/>,
         /// <para /> * <see cref="Result.Match{TIn,TOut}"/>
         /// </summary>
         public T Value { get; }
