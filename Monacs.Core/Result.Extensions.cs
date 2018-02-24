@@ -24,7 +24,7 @@ namespace Monacs.Core
         /// <typeparam name="T">Desired type parameter for <see cref="Result{T}"/> type.</typeparam>
         /// <param name="error">Details of the error.</param>
         public static Result<T> Error<T>(ErrorDetails error) => new Result<T>(error);
-        
+
         /* Converters */
 
         /// <summary>
@@ -400,8 +400,6 @@ namespace Monacs.Core
             ? Error<IEnumerable<T>>(items.First(i => i.IsError).Error)
             : Ok(items.Select(i => i.Value));
 
-        /* TryCatch */
-
         /// <summary>
         /// Tries to execute <paramref name="func"/>.
         /// If the execution completes without exception, returns Ok with the function result.
@@ -410,19 +408,6 @@ namespace Monacs.Core
         /// <typeparam name="T">Type of the value in the result.</typeparam>
         /// <param name="func">Function to execute.</param>
         /// <param name="errorHandler">Function that generates error details in case of exception.</param>
-        public static Result<T> TryCatch<T>(Func<T> func, Func<Exception, ErrorDetails> errorHandler)
-        {
-            try
-            {
-                var result = func();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return Error<T>(errorHandler(ex));
-            }
-        }
-
         /// <summary>
         /// Tries to execute <paramref name="func"/> with the value from the <paramref name="result"/> as an input.
         /// If the execution completes without exception, returns Ok with the function result.
@@ -434,7 +419,5 @@ namespace Monacs.Core
         /// <param name="result">Result to take the value from.</param>
         /// <param name="func">Function to execute.</param>
         /// <param name="errorHandler">Function that generates error details in case of exception.</param>
-        public static Result<TOut> TryCatch<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> func, Func<TIn, Exception, ErrorDetails> errorHandler) =>
-            result.Bind(value => Result.TryCatch(() => func(value), e => errorHandler(value, e)));
     }
 }
