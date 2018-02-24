@@ -537,5 +537,33 @@ module TryCatch2 =
         let error = Errors.Error(errorMessage)
         let result = Result.Error<ValueTuple<string, int>>(error)
         Result.TryCatch2(result,
-                         tryFunc = (fun _ _ -> "This should omitted."),
+                         tryFunc = (fun _ _ -> "This should be omitted."),
+                         errorHandler = (fun _ _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
+
+                         
+module TryCatch3 =
+
+    let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
+    let errorMessage = "Some error message."
+    
+    [<Fact>]
+    let ``TryCatch<TValue, TFst, TSnd> returns Ok<TValue> when previous result is Ok<(TFst, TSnd)> and function call doesn't throw`` () =
+        let result = Result.Ok(testTuple)
+        Result.TryCatch3(result, (fun a b c -> (a, b, c).ToValueTuple()), (fun _ _ _ _ -> Errors.Error())) |> should equal (Result.Ok(testTuple))
+
+    [<Fact>]
+    let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Ok<TFst, TSnd> and function call throws`` () =
+        let message = errorMessage
+        let result = Result.Ok(testTuple)
+        Result.TryCatch3(result,
+                         tryFunc = (fun _ _ _ -> raise(Exception(message))),
+                         errorHandler = (fun a b c e -> Errors.Error((a, b, c).ToValueTuple().ToString() + e.Message)))
+        |> should equal (Result.Error(Errors.Error(testTuple.ToString() + message)))
+
+    [<Fact>]
+    let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Error<TFst, TSnd>`` () =
+        let error = Errors.Error(errorMessage)
+        let result = Result.Error<ValueTuple<string, int>>(error)
+        Result.TryCatch2(result,
+                         tryFunc = (fun _ _ -> "This should be omitted."),
                          errorHandler = (fun _ _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
