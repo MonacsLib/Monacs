@@ -42,22 +42,6 @@ namespace Monacs.Core.Tuples
         public static TVal Match3<TFst, TSnd, TTrd, TVal>(this Result<(TFst fst, TSnd snd, TTrd trd)> result, Func<TFst, TSnd, TTrd, TVal> ok, Func<ErrorDetails, TVal> error) =>
             result.IsOk ? ok(result.Value.fst, result.Value.snd, result.Value.trd) : error(result.Error);
 
-        /* Side effects and tuples */
-
-        public static Result<(TFst, TSnd)> Do2<TFst, TSnd>(this Result<(TFst fst, TSnd snd)> result, Action<TFst, TSnd> action)
-        {
-            if (result.IsOk)
-                action(result.Value.fst, result.Value.snd);
-            return result;
-        }
-
-
-        public static Result<(TFst, TSnd, TTrd)> Do3<TFst, TSnd, TTrd>(this Result<(TFst fst, TSnd snd, TTrd trd)> result, Action<TFst, TSnd, TTrd> action)
-        {
-            if (result.IsOk)
-                action(result.Value.fst, result.Value.snd, result.Value.trd);
-            return result;
-        }
 
     }
 }
