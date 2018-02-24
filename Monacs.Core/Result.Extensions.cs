@@ -123,7 +123,7 @@ namespace Monacs.Core
         /// <param name="value">The value to convert to <see cref="Result{T}"/>.</param>
         /// <param name="error">Details of the error if the value is null or empty.</param>
         public static Result<string> OfString(string value, ErrorDetails error) =>
-            string.IsNullOrEmpty(value) ? Error<string>(error) : Ok(value);
+            String.IsNullOrEmpty(value) ? Error<string>(error) : Ok(value);
 
         /// <summary>
         /// Converts the string value to the <see cref="Result{T}"/> type.
@@ -133,7 +133,7 @@ namespace Monacs.Core
         /// <param name="value">The value to convert to <see cref="Result{T}"/>.</param>
         /// <param name="errorFunc">Function yielding details of the error if the value is null or empty.</param>
         public static Result<string> OfString(string value, Func<ErrorDetails> errorFunc) =>
-            string.IsNullOrEmpty(value) ? Error<string>(errorFunc()) : Ok(value);
+            String.IsNullOrEmpty(value) ? Error<string>(errorFunc()) : Ok(value);
 
         /// <summary>
         /// Converts the string value to the <see cref="Result{T}"/> type.
@@ -282,8 +282,6 @@ namespace Monacs.Core
         public static TOut MatchTo<TIn, TOut>(this Result<TIn> result, TOut ok, TOut error) =>
             result.IsOk ? ok : error;
 
-        /* Bind */
-
         /// <summary>
         /// Transforms the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="binder"/> function.
         /// If the input result is Ok, returns the value of the binder call (which is <see cref="Result{T}"/> of <typeparamref name="TOut"/>).
@@ -293,9 +291,6 @@ namespace Monacs.Core
         /// <typeparam name="TOut">Type of the value in the returned result.</typeparam>
         /// <param name="result">The result to bind with.</param>
         /// <param name="binder">Function called with the input result value if it's Ok case.</param>
-        public static Result<TOut> Bind<TIn, TOut>(this Result<TIn> result, Func<TIn, Result<TOut>> binder) =>
-            result.IsOk ? binder(result.Value) : Error<TOut>(result.Error);
-
         /* Map */
 
         /// <summary>

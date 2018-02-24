@@ -5,15 +5,6 @@ namespace Monacs.Core.Tuples
 {
     public static class Result
     {
-        /* Bind2 */
-        public static Result<TValue> Bind2<TValue, TFst, T2>(this Result<(TFst, T2)> result, Func<TFst, T2, Result<TValue>> func) =>
-            result.IsOk ? func(result.Value.Item1, result.Value.Item2) : Error<TValue>(result.Error);
-
-        /* Bind3 */
-        public static Result<TResult> Bind3<TResult, T1, T2, T3>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, Result<TResult>> func) =>
-            result.IsOk ? func(result.Value.Item1, result.Value.Item2, result.Value.Item3) : Error<TResult>(result.Error);
-
-
         /* Map2 */
         public static Result<TResult> Map2<TResult, T1, T2>(this Result<(T1, T2)> result, Func<T1, T2, TResult> func) =>
             result.IsOk ? Ok(func(result.Value.Item1, result.Value.Item2)) : Error<TResult>(result.Error);
@@ -41,7 +32,5 @@ namespace Monacs.Core.Tuples
 
         public static TVal Match3<TFst, TSnd, TTrd, TVal>(this Result<(TFst fst, TSnd snd, TTrd trd)> result, Func<TFst, TSnd, TTrd, TVal> ok, Func<ErrorDetails, TVal> error) =>
             result.IsOk ? ok(result.Value.fst, result.Value.snd, result.Value.trd) : error(result.Error);
-
-
     }
 }
