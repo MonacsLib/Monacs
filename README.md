@@ -14,7 +14,7 @@ Currently the library is build against .NET 4.6.1 and .NET Standard 1.3. To use 
 
 ## Documentation
 
-You can find [docs and samples here](docs/Index.md).
+You can find [docs and samples here](https://monacslib.github.io).
 
 ## Want more?
 
@@ -32,6 +32,8 @@ It's currently work-in-progress, expect new things to be added, APIs to be chang
 
 If you've found any errors or missing functionalities in the provided library feel free to report an issue using GitHub.
 You can also contribute by sending pull requests with bug fixes or enhancments.
+
+The [`develop` branch](https://github.com/MonacsLib/Monacs/tree/develop) should be used as a base for contributions, and I recommend rebasing on newest version of this branch when creating pull request. If you'd like to help but don't know where to look, start with [issues marked as up-for-grabs](https://github.com/MonacsLib/Monacs/labels/up-for-grabs).
 
 ## License
 
