@@ -14,7 +14,7 @@ Currently the library is build against .NET 4.6.1 and .NET Standard 1.3. To use 
 
 ## Documentation
 
-You can find [docs and samples here](docs/Index.md).
+You can find [docs and samples here](https://monacslib.github.io).
 
 ## Want more?
 
