@@ -1,6 +1,6 @@
 language: csharp
 mono: latest
-dotnet: 2.1.101
+dotnet: 2.1.4
 dist: trusty
 env: FrameworkPathOverride=/usr/lib/mono/4.5/
 script:
