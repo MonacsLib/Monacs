@@ -10,11 +10,11 @@ Some people may prefer Haskell type names (e.g. Maybe instead of Option) or LINQ
 
 ## Target platform and language versions
 
-Currently the library is build against .NET 4.6.1 and .NET Standard 1.3. To use the library you need to have .NET 4.6.1+ or .NET Core 1.0+ project with C# language version 6 or higher.
+Currently the library is build against .NET 4.6.1, .NET Standard 1.3 and  .NET Standard 2.0. To use the library you need to have .NET 4.6.1+ or .NET Core 1.0+ project with C# language version 6 or higher.
 
 ## Documentation
 
-You can find [docs and samples here](https://monacslib.github.io).
+You can find [docs and guides here](https://monacslib.github.io). There is also a sample project being developed using this library - [you can find it here](https://github.com/MonacsLib/Monacs.Sample).
 
 ## Want more?
 
