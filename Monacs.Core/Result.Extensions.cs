@@ -123,7 +123,7 @@ namespace Monacs.Core
         /// <param name="value">The value to convert to <see cref="Result{T}"/>.</param>
         /// <param name="error">Details of the error if the value is null or empty.</param>
         public static Result<string> OfString(string value, ErrorDetails error) =>
-            String.IsNullOrEmpty(value) ? Error<string>(error) : Ok(value);
+            string.IsNullOrEmpty(value) ? Error<string>(error) : Ok(value);
 
         /// <summary>
         /// Converts the string value to the <see cref="Result{T}"/> type.
@@ -133,7 +133,7 @@ namespace Monacs.Core
         /// <param name="value">The value to convert to <see cref="Result{T}"/>.</param>
         /// <param name="errorFunc">Function yielding details of the error if the value is null or empty.</param>
         public static Result<string> OfString(string value, Func<ErrorDetails> errorFunc) =>
-            String.IsNullOrEmpty(value) ? Error<string>(errorFunc()) : Ok(value);
+            string.IsNullOrEmpty(value) ? Error<string>(errorFunc()) : Ok(value);
 
         /// <summary>
         /// Converts the string value to the <see cref="Result{T}"/> type.
@@ -282,6 +282,20 @@ namespace Monacs.Core
         public static TOut MatchTo<TIn, TOut>(this Result<TIn> result, TOut ok, TOut error) =>
             result.IsOk ? ok : error;
 
+        /* Bind */
+
+        /// <summary>
+        /// Transforms the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="binder"/> function.
+        /// If the input result is Ok, returns the value of the binder call (which is <see cref="Result{T}"/> of <typeparamref name="TOut"/>).
+        /// Otherwise returns Error case of the Result of <typeparamref name="TOut"/>.
+        /// </summary>
+        /// <typeparam name="TIn">Type of the value in the input result.</typeparam>
+        /// <typeparam name="TOut">Type of the value in the returned result.</typeparam>
+        /// <param name="result">The result to bind with.</param>
+        /// <param name="binder">Function called with the input result value if it's Ok case.</param>
+        public static Result<TOut> Bind<TIn, TOut>(this Result<TIn> result, Func<TIn, Result<TOut>> binder) =>
+            result.IsOk ? binder(result.Value) : Error<TOut>(result.Error);
+
         /* Map */
 
         /// <summary>
@@ -323,31 +337,16 @@ namespace Monacs.Core
         public static TOut GetOrDefault<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> getter, TOut whenError = default(TOut)) =>
             result.IsOk ? getter(result.Value) : whenError;
 
-        /* Bind */
-
-        /// <summary>
-        /// Applies railway pattern and binds two functions.
-        /// <para />If the result of the previous function is on the success path, the received result is taken as an argument and the next function is invoked.
-        /// <para />If the result of the previous function is on the failure path, the new error is created to match generic result type, but the error details remain the same.
-        /// </summary>
-        /// <typeparam name="TIn">Type of the output value received from previous function.</typeparam>
-        /// <typeparam name="TOut">Type of the output value.</typeparam>
-        /// <param name="result">Output of previous function</param>
-        /// <param name="binder">Passes the output of first function to the next one.</param>
-        /// <returns>Result of the second function or error received from the first function.</returns>
-        public static Result<TOut> Bind<TIn, TOut>(this Result<TIn> result, Func<TIn, Result<TOut>> binder) =>
-            result.IsOk ? binder(result.Value) : Error<TOut>(result.Error);
-
         /* Side Effects */
 
         /// <summary>
-        /// Performs action if the given result is on the succesful path.
-        /// The action takes given result as an argument.
+        /// Performs the <paramref name="action"/> with the value of the <paramref name="result"/> if it's Ok case.
+        /// If the result is Error case nothing happens.
+        /// In both cases unmodified result is returned.
         /// </summary>
-        /// <typeparam name="T">Type of result value.</typeparam>
-        /// <param name="result">Given result.</param>
-        /// <param name="action">Action to perform.</param>
-        /// <returns>Result passed to the method as an argument.</returns>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="result">The result to check for a value.</param>
+        /// <param name="action">Function executed if the result is Ok case.</param>
         public static Result<T> Do<T>(this Result<T> result, Action<T> action)
         {
             if (result.IsOk)
@@ -356,13 +355,13 @@ namespace Monacs.Core
         }
 
         /// <summary>
-        /// Performs action if the given result is on the failure path.
-        /// The action takes given results error as an argument.
+        /// Performs the <paramref name="action"/> if the <paramref name="result"/> is Error case.
+        /// If the result is Ok case nothing happens.
+        /// In both cases unmodified result is returned.
         /// </summary>
-        /// <typeparam name="T">Type of result value.</typeparam>
-        /// <param name="result">Given result.</param>
-        /// <param name="action">Action to perform.</param>
-        /// <returns>Result passed to the method as an argument.</returns>
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="result">The result to check for a value.</param>
+        /// <param name="action">Function executed if the result is Error case.</param>
         public static Result<T> DoWhenError<T>(this Result<T> result, Action<ErrorDetails> action)
         {
             if (result.IsError)
@@ -404,37 +403,38 @@ namespace Monacs.Core
         /* TryCatch */
 
         /// <summary>
-        /// Invokes function in try/catch block and returns its result.
-        /// If any <see cref="Exception"/> is raised during execution, error handler is invoked and error details are returned.
+        /// Tries to execute <paramref name="func"/>.
+        /// If the execution completes without exception, returns Ok with the function result.
+        /// Otherwise returns Error with details generated by <paramref name="errorHandler"/> based on the thrown exception.
         /// </summary>
-        /// <typeparam name="TValue">Type of value returned by invoked function.</typeparam>
-        /// <param name="func">The function to be invoked in 'try' block.</param>
-        /// <param name="errorHandler">Handler invoked in 'catch' block on any raised exception.</param>
-        /// <returns><see cref="Result{TValue}"/> of invoked function in try block or <see cref="ErrorDetails"/> if any exception occurs.</returns>
-        public static Result<TValue> TryCatch<TValue>(Func<TValue> func, Func<Exception, ErrorDetails> errorHandler)
+        /// <typeparam name="T">Type of the value in the result.</typeparam>
+        /// <param name="func">Function to execute.</param>
+        /// <param name="errorHandler">Function that generates error details in case of exception.</param>
+        public static Result<T> TryCatch<T>(Func<T> func, Func<Exception, ErrorDetails> errorHandler)
         {
             try
             {
-                return Ok(func());
+                var result = func();
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return Error<TValue>(errorHandler(ex));
+                return Error<T>(errorHandler(ex));
             }
         }
 
         /// <summary>
-        /// Invokes function in try/catch block and returns its result.
-        /// If any <see cref="Exception"/> is raised during execution, error handler is invoked and error details are returned.
+        /// Tries to execute <paramref name="func"/> with the value from the <paramref name="result"/> as an input.
+        /// If the execution completes without exception, returns Ok with the function result.
+        /// Otherwise returns Error with details generated by <paramref name="errorHandler"/> based on the thrown exception.
+        /// If the <paramref name="result"/> is Error function is not executed and the Error is returned.
         /// </summary>
-        /// <typeparam name="TArg">Type of an argument accepted by invoked function.</typeparam>
-        /// <typeparam name="TValue">Type of value returned by invoked function.</typeparam>
-        /// <param name="result">Result of previous operation.</param>
-        /// <param name="func">The function to be invoked in 'try' block.</param>
-        /// <param name="errorHandler">Handler invoked in 'catch' block on any raised exception.</param>
-        /// <returns><see cref="Result{TValue}"/> of invoked function in try block or <see cref="ErrorDetails"/> if any exception occurs.</returns>
-        public static Result<TValue> TryCatch<TArg, TValue>(this Result<TArg> result, Func<TArg, TValue> func, Func<TArg, Exception, ErrorDetails> errorHandler) =>
+        /// <typeparam name="TIn">Type of the value in the input result.</typeparam>
+        /// <typeparam name="TOut">Type of the value in the output result.</typeparam>
+        /// <param name="result">Result to take the value from.</param>
+        /// <param name="func">Function to execute.</param>
+        /// <param name="errorHandler">Function that generates error details in case of exception.</param>
+        public static Result<TOut> TryCatch<TIn, TOut>(this Result<TIn> result, Func<TIn, TOut> func, Func<TIn, Exception, ErrorDetails> errorHandler) =>
             result.Bind(value => Result.TryCatch(() => func(value), e => errorHandler(value, e)));
-
     }
 }
