@@ -12,7 +12,6 @@
     <tags>csharp functional functional-programming monads railway-oriented-programming rop</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.6.1">
-        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="System.ValueTuple" version="4.4.0" />
       </group>
       <group targetFramework=".NETStandard1.3">
