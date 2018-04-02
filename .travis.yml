@@ -4,7 +4,6 @@ dotnet: 2.1.4
 dist: trusty
 env: FrameworkPathOverride=/usr/lib/mono/4.5/
 script:
- - dotnet restore
  - dotnet build -c Release
  - dotnet test -c Release --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
 deploy:
