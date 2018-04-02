@@ -412,10 +412,9 @@ module TryCatch =
         let result = Result.Error<int>(error)
         Result.TryCatch(result, (fun v -> v.ToString()), (fun _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
 
-open Monacs.Core.Tuples;
+module Match2 =
+    open Monacs.Core.Tuples
 
-module ResultMatch2 =
-    
     let testTuple = ("Meaning of Life", 42).ToValueTuple()
     let errorMessage = "Some error message."
 
@@ -436,23 +435,24 @@ module ResultMatch2 =
                       ok = (fun a b -> (a, b).ToString()),
                       error = (fun e -> e.Message.Value))
         |> should equal errorMessage
-        
+
     [<Fact>]
     let ``MatchTo2<TFst, TSnd, TVal> returns result of ok when value is Ok<(TFst, TSnd)>`` () =
         let result = Result.Ok(testTuple)
         Result.MatchTo2(result, "Success", "Failure") |> should equal "Success"
-        
+
     [<Fact>]
     let ``MatchTo2<TFst, TSnd, TVal> returns result of error when value is Error<(TFst, TSnd)>`` () =
         let error = Errors.Error(errorMessage)
         let result = Result.Error<ValueTuple<int, string>>(error)
         Result.MatchTo2(result, "Success", "Failure") |> should equal "Failure"
 
-module ResultMatch3 =
-    
+module Match3 =
+    open Monacs.Core.Tuples
+
     let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
     let errorMessage = "Some error message."
-    
+
     [<Fact>]
     let ``Match<TFst, TSnd, TTrd> returns result of ok when value is Ok<(TFst, TSnd, TTrd)>`` () =
         let result = Result.Ok(testTuple)
@@ -471,7 +471,19 @@ module ResultMatch3 =
                       error = (fun e -> e.Message.Value))
         |> should equal errorMessage
 
+    [<Fact>]
+    let ``MatchTo2<TFst, TSnd, TVal> returns result of ok when value is Ok<(TFst, TSnd)>`` () =
+        let result = Result.Ok(testTuple)
+        Result.MatchTo3(result, "Success", "Failure") |> should equal "Success"
+
+    [<Fact>]
+    let ``MatchTo2<TFst, TSnd, TVal> returns result of error when value is Error<(TFst, TSnd)>`` () =
+        let error = Errors.Error(errorMessage)
+        let result = Result.Error<ValueTuple<int, string, double>>(error)
+        Result.MatchTo3(result, "Success", "Failure") |> should equal "Failure"
+
 module ``Side effects (2 value tuple)`` =
+    open Monacs.Core.Tuples
 
     let testTuple = ("Meaning of Life", 42).ToValueTuple()
     let errorMessage = "Some error message."
@@ -491,8 +503,9 @@ module ``Side effects (2 value tuple)`` =
         let mutable result = expected
         Result.Do2(value, (fun a b -> result <- errorMessage)) |> should equal value
         result |> should equal expected
-        
+
 module ``Side effects (3 value tuple)`` =
+    open Monacs.Core.Tuples
 
     let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
     let errorMessage = "Some error message."
@@ -514,10 +527,11 @@ module ``Side effects (3 value tuple)`` =
         result |> should equal expected
 
 module TryCatch2 =
+    open Monacs.Core.Tuples
 
     let testTuple = ("Meaning of Life", 42).ToValueTuple()
     let errorMessage = "Some error message."
-    
+
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd> returns Ok<TValue> when previous result is Ok<(TFst, TSnd)> and function call doesn't throw`` () =
         let result = Result.Ok(testTuple)
@@ -540,12 +554,12 @@ module TryCatch2 =
                          tryFunc = (fun _ _ -> "This should be omitted."),
                          errorHandler = (fun _ _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
 
-                         
 module TryCatch3 =
+    open Monacs.Core.Tuples
 
     let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
     let errorMessage = "Some error message."
-    
+
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd> returns Ok<TValue> when previous result is Ok<(TFst, TSnd)> and function call doesn't throw`` () =
         let result = Result.Ok(testTuple)
