@@ -415,7 +415,7 @@ module TryCatch =
 module Match2 =
     open Monacs.Core.Tuples
 
-    let testTuple = ("Meaning of Life", 42).ToValueTuple()
+    let testTuple = struct ("Meaning of Life", 42)
     let errorMessage = "Some error message."
 
     [<Fact>]
@@ -430,7 +430,7 @@ module Match2 =
     [<Fact>]
     let ``Match<TFst, TSnd> returns result of error when value is Error<TFst, TSnd>`` () =
         let error = Errors.Error(errorMessage)
-        let result = Result.Error<ValueTuple<int, string>>(error)
+        let result = Result.Error<struct (int * string)>(error)
         Result.Match2(result,
                       ok = (fun a b -> (a, b).ToString()),
                       error = (fun e -> e.Message.Value))
@@ -444,13 +444,13 @@ module Match2 =
     [<Fact>]
     let ``MatchTo2<TFst, TSnd, TVal> returns result of error when value is Error<(TFst, TSnd)>`` () =
         let error = Errors.Error(errorMessage)
-        let result = Result.Error<ValueTuple<int, string>>(error)
+        let result = Result.Error<struct (int * string)>(error)
         Result.MatchTo2(result, "Success", "Failure") |> should equal "Failure"
 
 module Match3 =
     open Monacs.Core.Tuples
 
-    let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
+    let testTuple = struct ("Some stringo", 101, 2.0)
     let errorMessage = "Some error message."
 
     [<Fact>]
@@ -465,7 +465,7 @@ module Match3 =
     [<Fact>]
     let ``Match<TFst, TSnd, TTrd> returns result of error when value is Error<TFst, TSnd>`` () =
         let error = Errors.Error(errorMessage)
-        let value = Result.Error<ValueTuple<string, int, double>>(error)
+        let value = Result.Error<struct (string * int * double)>(error)
         Result.Match3(value,
                       ok = (fun a b c -> (a, b).ToString()),
                       error = (fun e -> e.Message.Value))
@@ -479,13 +479,13 @@ module Match3 =
     [<Fact>]
     let ``MatchTo2<TFst, TSnd, TVal> returns result of error when value is Error<(TFst, TSnd)>`` () =
         let error = Errors.Error(errorMessage)
-        let result = Result.Error<ValueTuple<int, string, double>>(error)
+        let result = Result.Error<struct (int * string * double)>(error)
         Result.MatchTo3(result, "Success", "Failure") |> should equal "Failure"
 
 module ``Side effects (2 value tuple)`` =
     open Monacs.Core.Tuples
 
-    let testTuple = ("Meaning of Life", 42).ToValueTuple()
+    let testTuple = struct ("Meaning of Life", 42)
     let errorMessage = "Some error message."
 
     [<Fact>]
@@ -493,12 +493,12 @@ module ``Side effects (2 value tuple)`` =
         let value = Result.Ok(testTuple)
         let expected = testTuple.ToString()
         let mutable result = ""
-        Result.Do2(value, (fun a b -> result <- (a, b).ToValueTuple().ToString())) |> should equal value
+        Result.Do2(value, (fun a b -> result <- (struct (a, b)).ToString())) |> should equal value
         result |> should equal expected
 
     [<Fact>]
     let ``Do<TFst, TSnd> returns value and doesn't execute action when value is Error<TFst, TSnd>`` () =
-        let value = Result.Error<ValueTuple<string, int>>(Errors.Error())
+        let value = Result.Error<struct (string * int)>(Errors.Error())
         let expected = "expected"
         let mutable result = expected
         Result.Do2(value, (fun a b -> result <- errorMessage)) |> should equal value
@@ -507,7 +507,7 @@ module ``Side effects (2 value tuple)`` =
 module ``Side effects (3 value tuple)`` =
     open Monacs.Core.Tuples
 
-    let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
+    let testTuple = struct ("Some stringo", 101, 2.0)
     let errorMessage = "Some error message."
 
     [<Fact>]
@@ -515,12 +515,12 @@ module ``Side effects (3 value tuple)`` =
         let value = Result.Ok(testTuple)
         let expected = testTuple.ToString()
         let mutable result = ""
-        Result.Do3(value, (fun a b c -> result <- (a, b, c).ToValueTuple().ToString())) |> should equal value
+        Result.Do3(value, (fun a b c -> result <- (struct (a, b, c)).ToString())) |> should equal value
         result |> should equal expected
 
     [<Fact>]
     let ``Do<TFst, TSnd, TTrd> returns value and doesn't execute action when value is Error<TFst, TSnd, TTrd>`` () =
-        let value = Result.Error<ValueTuple<string, int, double>>(Errors.Error())
+        let value = Result.Error<struct (string * int * double)>(Errors.Error())
         let expected = "expected"
         let mutable result = expected
         Result.Do3(value, (fun a b c -> result <- errorMessage)) |> should equal value
@@ -529,13 +529,13 @@ module ``Side effects (3 value tuple)`` =
 module TryCatch2 =
     open Monacs.Core.Tuples
 
-    let testTuple = ("Meaning of Life", 42).ToValueTuple()
+    let testTuple = struct ("Meaning of Life", 42)
     let errorMessage = "Some error message."
 
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd> returns Ok<TValue> when previous result is Ok<(TFst, TSnd)> and function call doesn't throw`` () =
         let result = Result.Ok(testTuple)
-        Result.TryCatch2(result, (fun a b -> (a, b).ToValueTuple()), (fun _ _ _ -> Errors.Error())) |> should equal (Result.Ok(testTuple))
+        Result.TryCatch2(result, (fun a b -> struct (a, b)), (fun _ _ _ -> Errors.Error())) |> should equal (Result.Ok(testTuple))
 
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Ok<TFst, TSnd> and function call throws`` () =
@@ -543,13 +543,13 @@ module TryCatch2 =
         let result = Result.Ok(testTuple)
         Result.TryCatch2(result,
                          tryFunc = (fun _ _ -> raise(Exception(message))),
-                         errorHandler = (fun a b e -> Errors.Error((a, b).ToValueTuple().ToString() + e.Message)))
+                         errorHandler = (fun a b e -> Errors.Error((struct (a, b)).ToString() + e.Message)))
         |> should equal (Result.Error(Errors.Error(testTuple.ToString() + message)))
 
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Error<TFst, TSnd>`` () =
         let error = Errors.Error(errorMessage)
-        let result = Result.Error<ValueTuple<string, int>>(error)
+        let result = Result.Error<struct (string * int)>(error)
         Result.TryCatch2(result,
                          tryFunc = (fun _ _ -> "This should be omitted."),
                          errorHandler = (fun _ _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
@@ -557,13 +557,13 @@ module TryCatch2 =
 module TryCatch3 =
     open Monacs.Core.Tuples
 
-    let testTuple = ("Some stringo", 101, 2.0).ToValueTuple()
+    let testTuple = struct ("Some stringo", 101, 2.0)
     let errorMessage = "Some error message."
 
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd> returns Ok<TValue> when previous result is Ok<(TFst, TSnd)> and function call doesn't throw`` () =
         let result = Result.Ok(testTuple)
-        Result.TryCatch3(result, (fun a b c -> (a, b, c).ToValueTuple()), (fun _ _ _ _ -> Errors.Error())) |> should equal (Result.Ok(testTuple))
+        Result.TryCatch3(result, (fun a b c -> struct (a, b, c)), (fun _ _ _ _ -> Errors.Error())) |> should equal (Result.Ok(testTuple))
 
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Ok<TFst, TSnd> and function call throws`` () =
@@ -571,13 +571,13 @@ module TryCatch3 =
         let result = Result.Ok(testTuple)
         Result.TryCatch3(result,
                          tryFunc = (fun _ _ _ -> raise(Exception(message))),
-                         errorHandler = (fun a b c e -> Errors.Error((a, b, c).ToValueTuple().ToString() + e.Message)))
+                         errorHandler = (fun a b c e -> Errors.Error((struct (a, b, c)).ToString() + e.Message)))
         |> should equal (Result.Error(Errors.Error(testTuple.ToString() + message)))
 
     [<Fact>]
     let ``TryCatch<TValue, TFst, TSnd>  returns Error<TValue> when previous result is Error<TFst, TSnd>`` () =
         let error = Errors.Error(errorMessage)
-        let result = Result.Error<ValueTuple<string, int>>(error)
+        let result = Result.Error<struct (string * int)>(error)
         Result.TryCatch2(result,
                          tryFunc = (fun _ _ -> "This should be omitted."),
                          errorHandler = (fun _ _ _ -> Errors.Error())) |> should equal (Result.Error<string>(error))
