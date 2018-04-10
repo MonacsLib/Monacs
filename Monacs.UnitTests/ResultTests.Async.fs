@@ -2,7 +2,7 @@ namespace Monacs.UnitTests.ResultTests.Async
 
 open System
 open System.Threading.Tasks
-open Giraffe.Tasks
+open FSharp.Control.Tasks
 open Xunit
 open FsUnit.Xunit
 

@@ -8,7 +8,7 @@ namespace Monacs.Core.Tuples
         /* Map */
 
         /// <summary>
-        /// Maps the value of the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="mapper"/> function. 
+        /// Maps the value of the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="mapper"/> function.
         /// <para /> If the input result is Ok, returns the Ok case with the value of the mapper call (which is <typeparamref name="TResult"/>).
         /// Otherwise returns Error case of the Result of <typeparamref name="TResult"/>.
         /// </summary>
@@ -21,9 +21,9 @@ namespace Monacs.Core.Tuples
             result.IsOk ? Ok(mapper(result.Value.fst, result.Value.snd)) : Error<TResult>(result.Error);
 
         /// <summary>
-        /// Maps the value of the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="mapper"/> function. 
+        /// Maps the value of the <paramref name="result"/> into another <see cref="Result{T}"/> using the <paramref name="mapper"/> function.
         /// <para /> If the input result is Ok, returns the Ok case with the value of the mapper call (which is <typeparamref name="TResult"/>).
-        /// Otherwise returns Error case of the Result of <typeparamref name="TOut"/>.
+        /// Otherwise returns Error case of the Result of <typeparamref name="TResult"/>.
         /// </summary>
         /// <typeparam name="TResult">Type of the value in the returned result.</typeparam>
         /// <typeparam name="TFst">Type of first value in input result.</typeparam>
@@ -81,6 +81,21 @@ namespace Monacs.Core.Tuples
         public static TResult MatchTo2<TResult, TFst, TSnd>(this Result<(TFst fst, TSnd snd)> result, TResult ok, TResult error) =>
             result.IsOk ? ok : error;
 
+        /// <summary>
+        /// Does the pattern matching on the <see cref="Result{T}"/> type.
+        /// If the <paramref name="result"/> is Ok, returns <paramref name="ok"/> value.
+        /// Otherwise returns <paramref name="error"/> value.
+        /// </summary>
+        /// <typeparam name="TResult">Type of the returned value.</typeparam>
+        /// <typeparam name="TFst">Type of the first tuple value in the result.</typeparam>
+        /// <typeparam name="TSnd">Type of the second tuple value in the result.</typeparam>
+        /// <typeparam name="TTrd">Type of the third tuple value in the result.</typeparam>
+        /// <param name="result">The result to match on.</param>
+        /// <param name="ok">Value returned for the Ok case.</param>
+        /// <param name="error">Value returned for the Error case.</param>
+        public static TResult MatchTo3<TResult, TFst, TSnd, TTrd>(this Result<(TFst fst, TSnd snd, TTrd trd)> result, TResult ok, TResult error) =>
+            result.IsOk ? ok : error;
+
         /* Do */
 
         /// <summary>
@@ -125,6 +140,7 @@ namespace Monacs.Core.Tuples
         /// <typeparam name="TResult">Type of value returned by invoked function.</typeparam>
         /// <typeparam name="TFst">Type of first tuple result value.</typeparam>
         /// <typeparam name="TSnd">Type of second tuple result value.</typeparam>
+        /// <param name="result">Result to take the value from.</param>
         /// <param name="tryFunc">The function to be invoked in 'try' block.</param>
         /// <param name="errorHandler">Handler invoked in 'catch' block on any raised exception.</param>
         /// <returns><see cref="Result{TValue}"/> of invoked function in try block or <see cref="ErrorDetails"/> if any exception occurs.</returns>
@@ -134,7 +150,7 @@ namespace Monacs.Core.Tuples
                  Func<TFst, TSnd, Exception, ErrorDetails> errorHandler) =>
                      result.Bind(value => TryCatch(func: () => tryFunc(value.fst, value.snd),
                                  errorHandler: err => errorHandler(value.fst, value.snd, err)));
-        
+
         /// <summary>
         /// Invokes function in try/catch block and returns its result.
         /// If any <see cref="Exception"/> is raised during execution, error handler is invoked and error details are returned.
@@ -143,6 +159,7 @@ namespace Monacs.Core.Tuples
         /// <typeparam name="TFst">Type of first tuple result value.</typeparam>
         /// <typeparam name="TSnd">Type of second tuple result value.</typeparam>
         /// <typeparam name="TTrd">Type of third tuple result value.</typeparam>
+        /// <param name="result">Result to take the value from.</param>
         /// <param name="tryFunc">The function to be invoked in 'try' block.</param>
         /// <param name="errorHandler">Handler invoked in 'catch' block on any raised exception.</param>
         /// <returns><see cref="Result{TValue}"/> of invoked function in try block or <see cref="ErrorDetails"/> if any exception occurs.</returns>
