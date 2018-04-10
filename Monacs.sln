@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monacs.Core", "Monacs.Core\Monacs.Core.csproj", "{AC132BCD-1473-4365-8A14-6C2A0EB41EBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monacs.Core", "Monacs.Core/Monacs.Core.csproj", "{AC132BCD-1473-4365-8A14-6C2A0EB41EBF}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Monacs.UnitTests", "Monacs.UnitTests\Monacs.UnitTests.fsproj", "{355D8F6F-F9C8-49BC-9416-4FEA3C2F8EAF}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Monacs.UnitTests", "Monacs.UnitTests/Monacs.UnitTests.fsproj", "{355D8F6F-F9C8-49BC-9416-4FEA3C2F8EAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
