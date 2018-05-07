@@ -6,9 +6,9 @@ namespace Monacs.Core
     /// Represents the details of the error in case of failed operation.
     /// To create the instances use the factory methods from the <see cref="Errors"/> class.
     /// </summary>
-    public struct ErrorDetails
+    public readonly struct ErrorDetails
     {
-        internal ErrorDetails(ErrorLevel level, Option<string> message, Option<string> key, Option<Exception> exception, Option<object> metadata)
+        internal ErrorDetails(in ErrorLevel level, in Option<string> message, in Option<string> key, in Option<Exception> exception, in Option<object> metadata)
         {
             Level = level;
             Message = message;

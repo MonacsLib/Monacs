@@ -10,7 +10,7 @@ namespace Monacs.Core
     /// <para />If no value is encapsulated it's called None.
     /// </summary>
     /// <typeparam name="T">Type of encapsulated value.</typeparam>
-    public struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
+    public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
     {
         internal Option(T value)
         {
@@ -86,18 +86,18 @@ namespace Monacs.Core
             }
         }
 
-        public static bool operator ==(Option<T> a, Option<T> b) => a.Equals(b);
+        public static bool operator ==(in Option<T> a, in Option<T> b) => a.Equals(b);
 
-        public static bool operator !=(Option<T> a, Option<T> b) => !a.Equals(b);
+        public static bool operator !=(in Option<T> a, in Option<T> b) => !a.Equals(b);
 
-        public static bool operator ==(Option<T> a, T b) => a.Equals(b);
+        public static bool operator ==(in Option<T> a, in T b) => a.Equals(b);
 
-        public static bool operator !=(Option<T> a, T b) => !a.Equals(b);
+        public static bool operator !=(in Option<T> a, in T b) => !a.Equals(b);
 
-        public static bool operator ==(T a, Option<T> b) => b.Equals(a);
+        public static bool operator ==(in T a, in Option<T> b) => b.Equals(a);
 
-        public static bool operator !=(T a, Option<T> b) => !b.Equals(a);
+        public static bool operator !=(in T a, in Option<T> b) => !b.Equals(a);
 
-        public static implicit operator T(Option<T> option) => option.IsSome ? option.Value : default;
+        public static implicit operator T(in Option<T> option) => option.IsSome ? option.Value : default;
     }
 }
