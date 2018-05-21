@@ -1,4 +1,4 @@
-namespace Monacs.UnitTests.ResultTests
+namespace Monacs.UnitTests.ResultTests.Tuple
 
 open System
 open Xunit
