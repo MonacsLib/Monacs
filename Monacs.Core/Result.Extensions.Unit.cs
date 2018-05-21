@@ -3,20 +3,20 @@ namespace Monacs.Core.Unit
     ///<summary>
     /// Contains the set of extensions to work with the <see cref="Result{Unit}" /> type.
     ///</summary>
-    public static class Result
+    public static class UnitResult
     {
         ///<summary>
         /// Creates the Ok case instance of the <see cref="Result{Unit}" />.
         ///</summary>
         public static Result<Unit> Ok() =>
-            Core.Result.Ok(Unit.Default);
+            Result.Ok(Unit.Default);
 
         ///<summary>
         /// Creates the Error case instance of the <see cref="Result{Unit}" /> type, containing error instead of value.
         ///</summary>
         /// <param name="error">Details of the error.</param>
         public static Result<Unit> Error(ErrorDetails error) =>
-            Core.Result.Error<Unit>(error);
+            Result.Error<Unit>(error);
 
         ///<summary>
         /// Rejects the value of the <see cref="Result{T}" /> and returns <see cref="Result{Unit}" /> instead.
