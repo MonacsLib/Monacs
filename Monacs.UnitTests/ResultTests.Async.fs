@@ -7,7 +7,6 @@ open Xunit
 open FsUnit.Xunit
 
 open Monacs.Core
-open Monacs.Core.Async
 
 [<AutoOpen>]
 module Helpers =
@@ -34,7 +33,7 @@ module BindAsync =
         task {
             let value = ok(42)
             let expected = ok("42")
-            let! result = Result.BindAsync(value, okFAsync(fun x -> x.ToString()))
+            let! result = AsyncResult.BindAsync(value, okFAsync(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -44,7 +43,7 @@ module BindAsync =
             let error = Errors.Error()
             let value = Result.Error<int>(error)
             let expected = Result.Error<string>(error)
-            let! result = Result.BindAsync(value, okFAsync(fun x -> x.ToString()))
+            let! result = AsyncResult.BindAsync(value, okFAsync(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -53,7 +52,7 @@ module BindAsync =
         task {
             let value = okAsync(42)
             let expected = ok("42")
-            let! result = Result.BindAsync(value, okFAsync(fun x -> x.ToString()))
+            let! result = AsyncResult.BindAsync(value, okFAsync(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -63,7 +62,7 @@ module BindAsync =
             let error = Errors.Error()
             let value = Task.FromResult(Result.Error<int>(error))
             let expected = Result.Error<string>(error)
-            let! result = Result.BindAsync(value, okF(fun x -> x.ToString()))
+            let! result = AsyncResult.BindAsync(value, okF(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -72,7 +71,7 @@ module BindAsync =
         task {
             let value = okAsync(42)
             let expected = ok("42")
-            let! result = Result.BindAsync(value, okF(fun x -> x.ToString()))
+            let! result = AsyncResult.BindAsync(value, okF(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -82,7 +81,7 @@ module BindAsync =
             let error = Errors.Error()
             let value = Task.FromResult(Result.Error<int>(error))
             let expected = Result.Error<string>(error)
-            let! result = Result.BindAsync(value, okF(fun x -> x.ToString()))
+            let! result = AsyncResult.BindAsync(value, okF(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -93,7 +92,7 @@ module MapAsync =
         task {
             let value = ok(42)
             let expected = ok("42")
-            let! result = Result.MapAsync(value, asyncF(fun x -> x.ToString()))
+            let! result = AsyncResult.MapAsync(value, asyncF(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -103,7 +102,7 @@ module MapAsync =
             let error = Errors.Error()
             let value = Result.Error<int>(error)
             let expected = Result.Error<string>(error)
-            let! result = Result.MapAsync(value, asyncF(fun x -> x.ToString()))
+            let! result = AsyncResult.MapAsync(value, asyncF(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -112,7 +111,7 @@ module MapAsync =
         task {
             let value = okAsync(42)
             let expected = ok("42")
-            let! result = Result.MapAsync<int, string>(value, asyncF(fun x -> x.ToString()))
+            let! result = AsyncResult.MapAsync<int, string>(value, asyncF(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -122,7 +121,7 @@ module MapAsync =
             let error = Errors.Error()
             let value = Task.FromResult(Result.Error<int>(error))
             let expected = Result.Error<string>(error)
-            let! result = Result.MapAsync<int, string>(value, asyncF(fun x -> x.ToString()))
+            let! result = AsyncResult.MapAsync<int, string>(value, asyncF(fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -131,7 +130,7 @@ module MapAsync =
         task {
             let value = okAsync(42)
             let expected = ok("42")
-            let! result = Result.MapAsync(value, (fun x -> x.ToString()))
+            let! result = AsyncResult.MapAsync(value, (fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -141,7 +140,7 @@ module MapAsync =
             let error = Errors.Error()
             let value = Task.FromResult(Result.Error<int>(error))
             let expected = Result.Error<string>(error)
-            let! result = Result.MapAsync(value, (fun x -> x.ToString()))
+            let! result = AsyncResult.MapAsync(value, (fun x -> x.ToString()))
             result |> should equal expected
         }
 
@@ -155,7 +154,7 @@ module MatchAsync =
             let expected = "test"
             let error = Errors.Error(expected)
             let value = Result.Error<int>(error)
-            let! result = Result.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = asyncF(errorMessage))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = asyncF(errorMessage))
             result |> should equal expected
         }
 
@@ -164,7 +163,7 @@ module MatchAsync =
         task {
             let value = ok(42)
             let expected = "test"
-            let! result = Result.MatchAsync(value, ok = asyncF(fun _ -> expected), error = asyncF(fun _ -> ""))
+            let! result = AsyncResult.MatchAsync(value, ok = asyncF(fun _ -> expected), error = asyncF(fun _ -> ""))
             result |> should equal expected
         }
 
@@ -174,7 +173,7 @@ module MatchAsync =
             let expected = "test"
             let error = Errors.Error(expected)
             let value = Result.Error<int>(error)
-            let! result = Result.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = errorMessage)
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = errorMessage)
             result |> should equal expected
         }
 
@@ -183,7 +182,7 @@ module MatchAsync =
         task {
             let value = ok(42)
             let expected = "test"
-            let! result = Result.MatchAsync(value, ok = asyncF(fun _ -> expected), error = (fun _ -> ""))
+            let! result = AsyncResult.MatchAsync(value, ok = asyncF(fun _ -> expected), error = (fun _ -> ""))
             result |> should equal expected
         }
 
@@ -193,7 +192,7 @@ module MatchAsync =
             let expected = "test"
             let error = Errors.Error(expected)
             let value = Result.Error<int>(error)
-            let! result = Result.MatchAsync<int, string>(value, ok = (fun _ -> ""), error = asyncF(errorMessage))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = (fun _ -> ""), error = asyncF(errorMessage))
             result |> should equal expected
         }
 
@@ -202,7 +201,7 @@ module MatchAsync =
         task {
             let value = ok(42)
             let expected = "test"
-            let! result = Result.MatchAsync(value, ok = (fun _ -> expected), error = asyncF(fun _ -> ""))
+            let! result = AsyncResult.MatchAsync(value, ok = (fun _ -> expected), error = asyncF(fun _ -> ""))
             result |> should equal expected
         }
 
@@ -212,7 +211,7 @@ module MatchAsync =
             let expected = "test"
             let error = Errors.Error(expected)
             let value = async(Result.Error<int>(error))
-            let! result = Result.MatchAsync(value, ok = (fun _ -> ""), error = errorMessage)
+            let! result = AsyncResult.MatchAsync(value, ok = (fun _ -> ""), error = errorMessage)
             result |> should equal expected
         }
 
@@ -221,7 +220,7 @@ module MatchAsync =
         task {
             let value = async(ok(42))
             let expected = "test"
-            let! result = Result.MatchAsync(value, ok = (fun _ -> expected), error = (fun _ -> ""))
+            let! result = AsyncResult.MatchAsync(value, ok = (fun _ -> expected), error = (fun _ -> ""))
             result |> should equal expected
         }
 
@@ -231,7 +230,7 @@ module MatchAsync =
             let expected = "test"
             let error = Errors.Error(expected)
             let value = async(Result.Error<int>(error))
-            let! result = Result.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = asyncF(errorMessage))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = asyncF(errorMessage))
             result |> should equal expected
         }
 
@@ -240,7 +239,7 @@ module MatchAsync =
         task {
             let value = async(ok(42))
             let expected = "test"
-            let! result = Result.MatchAsync<int, string>(value, ok = asyncF(fun _ -> expected), error = asyncF(fun _ -> ""))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = asyncF(fun _ -> expected), error = asyncF(fun _ -> ""))
             result |> should equal expected
         }
 
@@ -250,7 +249,7 @@ module MatchAsync =
             let expected = "test"
             let error = Errors.Error(expected)
             let value = async(Result.Error<int>(error))
-            let! result = Result.MatchAsync<int, string>(value, ok = (fun _ -> ""), error = asyncF(errorMessage))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = (fun _ -> ""), error = asyncF(errorMessage))
             result |> should equal expected
         }
 
@@ -259,7 +258,7 @@ module MatchAsync =
         task {
             let value = async(ok(42))
             let expected = "test"
-            let! result = Result.MatchAsync<int, string>(value, ok = (fun _ -> expected), error = asyncF(fun _ -> ""))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = (fun _ -> expected), error = asyncF(fun _ -> ""))
             result |> should equal expected
         }
 
@@ -269,7 +268,7 @@ module MatchAsync =
             let expected = "test"
             let error = Errors.Error(expected)
             let value = async(Result.Error<int>(error))
-            let! result = Result.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = (errorMessage))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = asyncF(fun _ -> ""), error = (errorMessage))
             result |> should equal expected
         }
 
@@ -278,7 +277,7 @@ module MatchAsync =
         task {
             let value = async(ok(42))
             let expected = "test"
-            let! result = Result.MatchAsync<int, string>(value, ok = asyncF(fun _ -> expected), error = (fun _ -> ""))
+            let! result = AsyncResult.MatchAsync<int, string>(value, ok = asyncF(fun _ -> expected), error = (fun _ -> ""))
             result |> should equal expected
         }
 
@@ -290,7 +289,7 @@ module ``Side effects`` =
             let value = Result.Ok(42)
             let expected = "42"
             let mutable result = ""
-            let! returnValue = Result.DoAsync(async(value), (fun _ -> result <- expected.ToString()))
+            let! returnValue = AsyncResult.DoAsync(async(value), (fun _ -> result <- expected.ToString()))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -301,7 +300,7 @@ module ``Side effects`` =
             let value = Result.Error<int>(Errors.Error())
             let expected = "test"
             let mutable result = expected
-            let! returnValue = Result.DoAsync(async(value), (fun _ -> result <- "fail"))
+            let! returnValue = AsyncResult.DoAsync(async(value), (fun _ -> result <- "fail"))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -312,7 +311,7 @@ module ``Side effects`` =
             let value = Result.Ok(42)
             let expected = "42"
             let mutable result = ""
-            let! returnValue = Result.DoAsync(value, asyncA(fun _ -> result <- expected.ToString()))
+            let! returnValue = AsyncResult.DoAsync(value, asyncA(fun _ -> result <- expected.ToString()))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -323,7 +322,7 @@ module ``Side effects`` =
             let value = Result.Error<int>(Errors.Error())
             let expected = "test"
             let mutable result = expected
-            let! returnValue = Result.DoAsync(value, asyncA(fun _ -> result <- "fail"))
+            let! returnValue = AsyncResult.DoAsync(value, asyncA(fun _ -> result <- "fail"))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -334,7 +333,7 @@ module ``Side effects`` =
             let value = Result.Ok(42)
             let expected = "42"
             let mutable result = ""
-            let! returnValue = Result.DoAsync(async(value), asyncA(fun _ -> result <- expected.ToString()))
+            let! returnValue = AsyncResult.DoAsync(async(value), asyncA(fun _ -> result <- expected.ToString()))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -345,7 +344,7 @@ module ``Side effects`` =
             let value = Result.Error<int>(Errors.Error())
             let expected = "test"
             let mutable result = expected
-            let! returnValue = Result.DoAsync(async(value), asyncA(fun _ -> result <- "fail"))
+            let! returnValue = AsyncResult.DoAsync(async(value), asyncA(fun _ -> result <- "fail"))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -356,7 +355,7 @@ module ``Side effects`` =
             let value = Result.Ok(42)
             let expected = "test"
             let mutable result = expected
-            let! returnValue = Result.DoWhenErrorAsync(async(value), (fun _ -> result <- "fail"))
+            let! returnValue = AsyncResult.DoWhenErrorAsync(async(value), (fun _ -> result <- "fail"))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -367,7 +366,7 @@ module ``Side effects`` =
             let value = Result.Error<int>(Errors.Error())
             let expected = "42"
             let mutable result = ""
-            let! returnValue = Result.DoWhenErrorAsync(async(value), (fun _ -> result <- expected.ToString()))
+            let! returnValue = AsyncResult.DoWhenErrorAsync(async(value), (fun _ -> result <- expected.ToString()))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -378,7 +377,7 @@ module ``Side effects`` =
             let value = Result.Ok(42)
             let expected = "test"
             let mutable result = expected
-            let! returnValue = Result.DoWhenErrorAsync(value, asyncA(fun _ -> result <- "fail"))
+            let! returnValue = AsyncResult.DoWhenErrorAsync(value, asyncA(fun _ -> result <- "fail"))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -389,7 +388,7 @@ module ``Side effects`` =
             let value = Result.Error<int>(Errors.Error())
             let expected = "42"
             let mutable result = ""
-            let! returnValue = Result.DoWhenErrorAsync(value, asyncA(fun _ -> result <- expected.ToString()))
+            let! returnValue = AsyncResult.DoWhenErrorAsync(value, asyncA(fun _ -> result <- expected.ToString()))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -400,7 +399,7 @@ module ``Side effects`` =
             let value = Result.Ok(42)
             let expected = "test"
             let mutable result = expected
-            let! returnValue = Result.DoWhenErrorAsync(async(value), asyncA(fun _ -> result <- "fail"))
+            let! returnValue = AsyncResult.DoWhenErrorAsync(async(value), asyncA(fun _ -> result <- "fail"))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -411,7 +410,7 @@ module ``Side effects`` =
             let value = Result.Error<int>(Errors.Error())
             let expected = "42"
             let mutable result = ""
-            let! returnValue = Result.DoWhenErrorAsync(async(value), asyncA(fun _ -> result <- expected.ToString()))
+            let! returnValue = AsyncResult.DoWhenErrorAsync(async(value), asyncA(fun _ -> result <- expected.ToString()))
             returnValue |> should equal value
             result |> should equal expected
         }
@@ -422,7 +421,7 @@ module TryCatch =
     let ``TryCatchAsync<T> returns Ok<T> when function call doesn't throw`` () =
         task {
             let value = 42
-            let! result = Result.TryCatchAsync((fun () -> async(value)), (fun _ -> Errors.Error()))
+            let! result = AsyncResult.TryCatchAsync((fun () -> async(value)), (fun _ -> Errors.Error()))
             result |> should equal (Result.Ok(value))
         }
 
@@ -430,7 +429,7 @@ module TryCatch =
     let ``TryCatchAsync<T> returns Error<T> when function call throws`` () =
         task {
             let message = "This should not happen!"
-            let! result = Result.TryCatchAsync((fun () -> Task.FromException<obj>(Exception(message))), (fun e -> Errors.Error(e.Message)))
+            let! result = AsyncResult.TryCatchAsync((fun () -> Task.FromException<obj>(Exception(message))), (fun e -> Errors.Error(e.Message)))
             result |> should equal (Result.Error(Errors.Error(message)))
         }
 
@@ -439,7 +438,7 @@ module TryCatch =
         task {
             let value = Result.Ok(42)
             let expected = "42"
-            let! result = Result.TryCatchAsync(value, (fun v -> async(v.ToString())), (fun _ _ -> Errors.Error()))
+            let! result = AsyncResult.TryCatchAsync(value, (fun v -> async(v.ToString())), (fun _ _ -> Errors.Error()))
             result |> should equal (Result.Ok(expected))
         }
 
@@ -449,7 +448,7 @@ module TryCatch =
             let expected = "OK"
             let message = "This should not happen!"
             let value = Result.Ok(expected)
-            let! result = Result.TryCatchAsync(value, (fun _ -> Task.FromException<obj>(Exception(message))), (fun v e -> Errors.Error(v + e.Message)))
+            let! result = AsyncResult.TryCatchAsync(value, (fun _ -> Task.FromException<obj>(Exception(message))), (fun v e -> Errors.Error(v + e.Message)))
             result |> should equal (Result.Error(Errors.Error(expected + message)))
         }
 
@@ -458,6 +457,6 @@ module TryCatch =
         task {
             let error = Errors.Error("Oh no!")
             let value = Result.Error<int>(error)
-            let! result = Result.TryCatchAsync(value, (fun v -> async(v.ToString())), (fun _ _ -> Errors.Error()))
+            let! result = AsyncResult.TryCatchAsync(value, (fun v -> async(v.ToString())), (fun _ _ -> Errors.Error()))
             result |> should equal (Result.Error<string>(error))
         }
