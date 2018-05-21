@@ -6,12 +6,14 @@ namespace Monacs.Core.Unit
     /// Type that has only one value.
     /// Used to replace void whenever some value is needed, e.g. you can return Task{Unit}.
     ///</summary>
-    public struct Unit : IEquatable<Unit>
+    public readonly struct Unit : IEquatable<Unit>
     {
+        private static Unit _default = default;
+
         ///<summary>
         /// The only value of <see cref="Unit" />.
         ///</summary>
-        public static Unit Default { get; } = default;
+        public static ref readonly Unit Default => ref _default;
 
         ///<summary>
         /// <see cref="Unit" /> is always equal to itself. There is only one possible value of <see cref="Unit" />.
@@ -36,11 +38,11 @@ namespace Monacs.Core.Unit
         ///<summary>
         /// <see cref="Unit" /> is always equal to itself.
         ///</summary>
-        public static bool operator ==(Unit first, Unit second) => true;
+        public static bool operator ==(in Unit first, in Unit second) => true;
 
         ///<summary>
         /// <see cref="Unit" /> is always equal to itself.
         ///</summary>
-        public static bool operator !=(Unit first, Unit second) => false;
+        public static bool operator !=(in Unit first, in Unit second) => false;
     }
 }
