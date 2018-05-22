@@ -193,8 +193,8 @@ namespace Monacs.Core
         ///</summary>
         /// <typeparam name="T">Type of the encapsulated value.</typeparam>
         /// <param name="result">The result of which the value should be ignored.</param>
-        public static async Task<Result<Monacs.Core.Unit.Unit>> IgnoreAsync<T>(this Task<Result<T>> result) =>
-            (await result).Map(_ => Monacs.Core.Unit.Unit.Default);
+        public static async Task<Result<Unit.Unit>> IgnoreAsync<T>(this Task<Result<T>> result) =>
+            (await result).Map(_ => Unit.Unit.Default);
 
         /* Side Effects */
 

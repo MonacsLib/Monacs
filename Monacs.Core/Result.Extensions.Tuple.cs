@@ -3,6 +3,9 @@ using static Monacs.Core.Result;
 
 namespace Monacs.Core
 {
+    ///<summary>
+    /// Contains the set of tuple extensions to work with the <see cref="Result{T}" /> type.
+    ///</summary>
     public static class TupleResult
     {
         /* Map */
