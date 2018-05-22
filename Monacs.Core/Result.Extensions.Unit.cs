@@ -1,4 +1,4 @@
-namespace Monacs.Core.Unit
+namespace Monacs.Core
 {
     ///<summary>
     /// Contains the set of extensions to work with the <see cref="Result{Unit}" /> type.
