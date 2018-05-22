@@ -10,7 +10,7 @@ namespace Monacs.Core
     /// <para />If the operation failed it will contain error information of type <see cref="ErrorDetails"/> and it's called Error.
     /// </summary>
     /// <typeparam name="T">Expected return value type.</typeparam>
-    public struct Result<T> : IEquatable<Result<T>>
+    public readonly struct Result<T> : IEquatable<Result<T>>
     {
         internal Result(T value)
         {
@@ -19,7 +19,7 @@ namespace Monacs.Core
             IsOk = true;
         }
 
-        internal Result(ErrorDetails error)
+        internal Result(in ErrorDetails error)
         {
             Value = default;
             Error = error;
@@ -100,10 +100,10 @@ namespace Monacs.Core
             }
         }
 
-        public static bool operator ==(Result<T> a, Result<T> b) =>
+        public static bool operator ==(in Result<T> a, in Result<T> b) =>
             a.Equals(b);
 
-        public static bool operator !=(Result<T> a, Result<T> b) =>
+        public static bool operator !=(in Result<T> a, in Result<T> b) =>
             !a.Equals(b);
     }
 }

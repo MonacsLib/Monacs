@@ -2,12 +2,12 @@ using System;
 using System.Threading.Tasks;
 using static Monacs.Core.Result;
 
-namespace Monacs.Core.Async
+namespace Monacs.Core
 {
     ///<summary>
     /// Contains the set of async extensions to work with the <see cref="Result{T}" /> type.
     ///</summary>
-    public static class Result
+    public static class AsyncResult
     {
         /* BindAsync */
 
@@ -193,8 +193,8 @@ namespace Monacs.Core.Async
         ///</summary>
         /// <typeparam name="T">Type of the encapsulated value.</typeparam>
         /// <param name="result">The result of which the value should be ignored.</param>
-        public static async Task<Result<Monacs.Core.Unit.Unit>> IgnoreAsync<T>(this Task<Result<T>> result) =>
-            (await result).Map(_ => Monacs.Core.Unit.Unit.Default);
+        public static async Task<Result<Unit.Unit>> IgnoreAsync<T>(this Task<Result<T>> result) =>
+            (await result).Map(_ => Unit.Unit.Default);
 
         /* Side Effects */
 
