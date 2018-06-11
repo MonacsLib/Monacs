@@ -81,7 +81,7 @@ namespace Monacs.Core
 
         /* Side effects */
 
-        public static Either<L, R> WhenLeft<L, R>(this Either<L, R> target, Action<L> action)
+        public static Either<L, R> DoWhenLeft<L, R>(this Either<L, R> target, Action<L> action)
         {
             if (target.IsLeft)
                 action(target.Left);
@@ -89,7 +89,7 @@ namespace Monacs.Core
             return target;
         }
 
-        public static Either<L, R> WhenRight<L, R>(this Either<L, R> target, Action<R> action)
+        public static Either<L, R> DoWhenRight<L, R>(this Either<L, R> target, Action<R> action)
         {
             if (target.IsRight)
                 action(target.Right);
