@@ -6,16 +6,16 @@ namespace Monacs.Core
 {
     public readonly struct Either<L, R> : IEquatable<Either<L, R>>
     {
-        public L Left { get; }
-        public R Right { get; }
+        public L LeftValue { get; }
+        public R RightValue { get; }
         public LeftOrRight LeftOrRight { get; }
         public bool IsLeft => LeftOrRight == LeftOrRight.Left;
         public bool IsRight => LeftOrRight == LeftOrRight.Right;
 
         private Either(L left, R right, LeftOrRight leftOrRight)
         {
-            Left = left;
-            Right = right;
+            LeftValue = left;
+            RightValue = right;
             LeftOrRight = leftOrRight;
         }
 
@@ -24,8 +24,8 @@ namespace Monacs.Core
 
         public bool Equals(Either<L, R> other) =>
             LeftOrRight == other.LeftOrRight
-            && IsLeft ? EqualityComparer<L>.Default.Equals(Left, other.Left)
-                      : EqualityComparer<R>.Default.Equals(Right, other.Right);
+            && IsLeft ? EqualityComparer<L>.Default.Equals(LeftValue, other.LeftValue)
+                      : EqualityComparer<R>.Default.Equals(RightValue, other.RightValue);
 
         public override bool Equals(object obj) =>
             !ReferenceEquals(null, obj)
@@ -36,8 +36,8 @@ namespace Monacs.Core
         {
             unchecked
             {
-                var hashCode = EqualityComparer<L>.Default.GetHashCode(Left);
-                hashCode = (hashCode * 397) ^ EqualityComparer<R>.Default.GetHashCode(Right);
+                var hashCode = EqualityComparer<L>.Default.GetHashCode(LeftValue);
+                hashCode = (hashCode * 397) ^ EqualityComparer<R>.Default.GetHashCode(RightValue);
                 hashCode = (hashCode * 397) ^ (int)LeftOrRight;
                 return hashCode;
             }
@@ -50,7 +50,7 @@ namespace Monacs.Core
         public override string ToString()
         {
             var side = IsLeft ? "Left" : "Right";
-            var value = IsLeft ? Left.ToString() : Right.ToString();
+            var value = IsLeft ? LeftValue.ToString() : RightValue.ToString();
             return $"Either<{typeof(L).Name}, {typeof(R).Name}>({side} = {value})";
         }
     }
@@ -62,21 +62,21 @@ namespace Monacs.Core
         /* Match */
 
         public static Out Match<L, R, Out>(this Either<L, R> target, Func<L, Out> left, Func<R, Out> right) =>
-            target.IsLeft ? left(target.Left) : right(target.Right);
+            target.IsLeft ? left(target.LeftValue) : right(target.RightValue);
 
         /* Map */
 
         public static Out MapRight<L, R, Out>(this Either<L, R> target, Func<R, Out> map) =>
-            map(target.Right);
+            map(target.RightValue);
 
         public static Out MapLeft<L, R, Out>(this Either<L, R> target, Func<L, Out> map) =>
-            map(target.Left);
+            map(target.LeftValue);
 
         /* Bind */
 
         public static Either<LOut, ROut> Bind<L, R, LOut, ROut>(
             this Either<L, R> target, Func<L, LOut> leftBinder, Func<R, ROut> rightBinder) =>
-            target.IsLeft ? Left<LOut, ROut>(leftBinder(target.Left)) : Right<LOut, ROut>(rightBinder(target.Right));
+            target.IsLeft ? Left<LOut, ROut>(leftBinder(target.LeftValue)) : Right<LOut, ROut>(rightBinder(target.RightValue));
 
 
         /* Side effects */
@@ -84,7 +84,7 @@ namespace Monacs.Core
         public static Either<L, R> DoWhenLeft<L, R>(this Either<L, R> target, Action<L> action)
         {
             if (target.IsLeft)
-                action(target.Left);
+                action(target.LeftValue);
 
             return target;
         }
@@ -92,7 +92,7 @@ namespace Monacs.Core
         public static Either<L, R> DoWhenRight<L, R>(this Either<L, R> target, Action<R> action)
         {
             if (target.IsRight)
-                action(target.Right);
+                action(target.RightValue);
 
             return target;
         }
@@ -109,10 +109,10 @@ namespace Monacs.Core
         /* Collections */
 
         public static IEnumerable<L> ChooseLeft<L, R>(this IEnumerable<Either<L, R>> target) =>
-            target.Where(x => x.LeftOrRight == LeftOrRight.Left).Select(x => x.Left);
+            target.Where(x => x.LeftOrRight == LeftOrRight.Left).Select(x => x.LeftValue);
 
         public static IEnumerable<R> ChooseRight<L, R>(this IEnumerable<Either<L, R>> target) =>
-            target.Where(x => x.LeftOrRight == LeftOrRight.Right).Select(x => x.Right);
+            target.Where(x => x.LeftOrRight == LeftOrRight.Right).Select(x => x.RightValue);
 
         public static Option<IEnumerable<L>> SequenceLeft<L, R>(this IEnumerable<Either<L, R>> target) =>
             target.Any(x => x.IsRight)
