@@ -61,6 +61,26 @@ module ``Constructors and equality`` =
 module Match =
 
     [<Fact>]
-    let ``Match<L, R> goes with left when L value is set`` () =
-        let either = Either.Left(42)        
-        Either.Match(either, left = (fun l -> "left"), right = (fun r -> "right")) |> should equal "left"
+    let ``Match goes with left when LeftValue is set`` () =
+        let either = Either.Left(42)
+        Either.Match(either, left = (fun _ -> "left"), right = (fun _ -> "right")) |> should equal "left"
+
+    [<Fact>]
+    let ``Match goes with right when RightValue is set`` () =
+        let either = Either.Right(42)
+        Either.Match(either, left = (fun _ -> "left"), right = (fun _ -> "right")) |> should equal "right"
+
+module Map =
+
+    [<Fact>]
+    let ``Maps left side when LeftValue is set`` () =
+        let either = Either.Left<int, int>(42) // We need to provider generic types explicitly as C# compiler takes type of `object` as default for not provided variable
+        let expected = Either.Left<int, int>(84)
+        Either.Map(either, mapLeft = (fun l -> l * 2), mapRight = (fun r -> r * 3)) |> should equal expected
+
+    
+    [<Fact>]
+    let ``Maps right side when RightValue is set`` () =
+        let either = Either.Right<int, int>(42)
+        let expected = Either.Right<int, int>(126)
+        Either.Map(either, mapLeft = (fun l -> l * 2), mapRight = (fun r -> r * 3)) |> should equal expected
