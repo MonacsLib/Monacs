@@ -22,13 +22,13 @@ module ``Constructors and equality`` =
     let ``Boxed Left of Either<L, R> is not null`` ()  =
         let left = box (Either.Left(42))
         isNull left |> should equal false
-        isNull left |> should equal true
+        not (isNull left) |> should equal true
 
     [<Fact>]
     let ``Boxed Right of Either<L, R> is not null`` ()  =
         let right = box (Either.Right(42))
         isNull right |> should equal false
-        isNull right |> should equal true
+        not (isNull right) |> should equal true
 
     [<Fact>]
     let ``Either<L, R> equals Either<L, R> when the Left values are equal`` () =
@@ -44,13 +44,13 @@ module ``Constructors and equality`` =
 
     [<Fact>]
     let ``Either<L, R> doesn't equal Either<L, R> when the Left values are not equal`` ()  =
-        Either.Left(42) =  Either.Left(52) |> should equal true
-        Either.Left(42) <> Either.Left(52) |> should equal false
+        Either.Left(42) =  Either.Left(52) |> should equal false
+        Either.Left(42) <> Either.Left(52) |> should equal true
 
     [<Fact>]
     let ``Either<L, R> doesn't equal Either<L, R> when the Right values are not equal`` () =
-        Either.Right(42) =  Either.Right(52) |> should equal true
-        Either.Right(42) <> Either.Right(52) |> should equal false
+        Either.Right(42) =  Either.Right(52) |> should equal false
+        Either.Right(42) <> Either.Right(52) |> should equal true
 
     [<Fact>]
     let ``Left side of Either<L,R> doesn't equal the Right side``()  =
