@@ -66,11 +66,9 @@ namespace Monacs.Core
 
         /* Map */
 
-        public static Out MapRight<L, R, Out>(this Either<L, R> target, Func<R, Out> map) =>
-            map(target.RightValue);
-
-        public static Out MapLeft<L, R, Out>(this Either<L, R> target, Func<L, Out> map) =>
-            map(target.LeftValue);
+        // E<L,R> -> (L -> LOut, R -> ROut) -> E<LOut, ROut>
+        public static Either<LOut, ROut> Map<L, R, LOut, ROut>(this Either<L, R> either, Func<L, LOut> mapLeft, Func<R, ROut> mapRight) =>
+            either.IsLeft ? Left<LOut, ROut>(mapLeft(either.LeftValue)) : Right<LOut, ROut>(mapRight(either.RightValue));
 
         /* Bind */
 
