@@ -61,8 +61,9 @@ namespace Monacs.Core
     {
         /* Match */
 
-        public static Out Match<L, R, Out>(this Either<L, R> target, Func<L, Out> left, Func<R, Out> right) =>
-            target.IsLeft ? left(target.LeftValue) : right(target.RightValue);
+        // E<L,R> -> Out
+        public static Out Match<L, R, Out>(this Either<L, R> either, Func<L, Out> left, Func<R, Out> right) =>
+            either.IsLeft ? left(either.LeftValue) : right(either.RightValue);
 
         /* Map */
 
@@ -79,20 +80,20 @@ namespace Monacs.Core
 
         /* Side effects */
 
-        public static Either<L, R> DoWhenLeft<L, R>(this Either<L, R> target, Action<L> action)
+        public static Either<L, R> DoWhenLeft<L, R>(this Either<L, R> either, Action<L> action)
         {
-            if (target.IsLeft)
-                action(target.LeftValue);
+            if (either.IsLeft)
+                action(either.LeftValue);
 
-            return target;
+            return either;
         }
 
-        public static Either<L, R> DoWhenRight<L, R>(this Either<L, R> target, Action<R> action)
+        public static Either<L, R> DoWhenRight<L, R>(this Either<L, R> either, Action<R> action)
         {
-            if (target.IsRight)
-                action(target.RightValue);
+            if (either.IsRight)
+                action(either.RightValue);
 
-            return target;
+            return either;
         }
 
         /* Factories */
@@ -106,20 +107,20 @@ namespace Monacs.Core
 
         /* Collections */
 
-        public static IEnumerable<L> ChooseLeft<L, R>(this IEnumerable<Either<L, R>> target) =>
-            target.Where(x => x.LeftOrRight == LeftOrRight.Left).Select(x => x.LeftValue);
+        public static IEnumerable<L> ChooseLeft<L, R>(this IEnumerable<Either<L, R>> items) =>
+            items.Where(x => x.LeftOrRight == LeftOrRight.Left).Select(x => x.LeftValue);
 
-        public static IEnumerable<R> ChooseRight<L, R>(this IEnumerable<Either<L, R>> target) =>
-            target.Where(x => x.LeftOrRight == LeftOrRight.Right).Select(x => x.RightValue);
+        public static IEnumerable<R> ChooseRight<L, R>(this IEnumerable<Either<L, R>> items) =>
+            items.Where(x => x.LeftOrRight == LeftOrRight.Right).Select(x => x.RightValue);
 
-        public static Option<IEnumerable<L>> SequenceLeft<L, R>(this IEnumerable<Either<L, R>> target) =>
-            target.Any(x => x.IsRight)
-                ? Option.Some(target.ChooseLeft())
+        public static Option<IEnumerable<L>> SequenceLeft<L, R>(this IEnumerable<Either<L, R>> items) =>
+            items.Any(x => x.IsRight)
+                ? Option.Some(items.ChooseLeft())
                 : Option.None<IEnumerable<L>>();
 
-        public static Option<IEnumerable<R>> SequenceRight<L, R>(this IEnumerable<Either<L, R>> target) =>
-            target.Any(x => x.IsLeft)
-                ? Option.Some(target.ChooseRight())
+        public static Option<IEnumerable<R>> SequenceRight<L, R>(this IEnumerable<Either<L, R>> items) =>
+            items.Any(x => x.IsLeft)
+                ? Option.Some(items.ChooseRight())
                 : Option.None<IEnumerable<R>>();
 
 
