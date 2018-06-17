@@ -85,7 +85,7 @@ namespace Monacs.Core
 
         // E<L,R> -> (L -> LOut, R -> ROut) -> E<LOut, ROut>
         public static Either<LOut, ROut> Map<L, R, LOut, ROut>(this Either<L, R> either, Func<L, LOut> mapLeft, Func<R, ROut> mapRight) =>
-            either.IsLeft ? Left<LOut, ROut>(mapLeft(either.LeftValue)) : Right<LOut, ROut>(mapRight(either.RightValue));
+            either.IsLeft ? ToEitherLeft<LOut, ROut>(mapLeft(either.LeftValue)) : ToEitherRight<LOut, ROut>(mapRight(either.RightValue));
 
         /* Bind */
 
@@ -114,12 +114,12 @@ namespace Monacs.Core
 
         /* Factories */
 
-        public static Either<L, R> Left<L, R>(L left) => new Either<L, R>(left);
+        public static Either<L, R> ToEitherLeft<L, R>(L left) => new Either<L, R>(left);
 
-        public static Either<L, R> Right<L, R>(R right) => new Either<L, R>(right);
+        public static Either<L, R> ToEitherRight<L, R>(R right) => new Either<L, R>(right);
 
-        public static Either<L, R> FromTuple<L, R>((L left, R right) tuple) =>
-            tuple.right == null ? Left<L, R>(tuple.left) : Right<L, R>(tuple.right);
+        public static Either<L, R> ToEither<L, R>((L left, R right) tuple) =>
+            tuple.right == null ? ToEitherLeft<L, R>(tuple.left) : ToEitherRight<L, R>(tuple.right);
 
         /* Collections */
 
