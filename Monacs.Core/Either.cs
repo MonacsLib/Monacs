@@ -105,6 +105,7 @@ namespace Monacs.Core
             return either;
         }
 
+        // E<L, R> -> (R -> Unit) -> E<L, R>
         public static Either<L, R> DoWhenRight<L, R>(this Either<L, R> either, Action<R> action)
         {
             if (either.IsRight)
@@ -115,31 +116,33 @@ namespace Monacs.Core
 
         /* Factories */
 
+        // L -> E<L, R>
         public static Either<L, R> ToEitherLeft<L, R>(L left) => new Either<L, R>(left);
 
+        // R -> E<L, R>
         public static Either<L, R> ToEitherRight<L, R>(R right) => new Either<L, R>(right);
 
+        // (L, R) -> E<L, R>
         public static Either<L, R> ToEither<L, R>((L left, R right) tuple) =>
             tuple.right == null ? ToEitherLeft<L, R>(tuple.left) : ToEitherRight<L, R>(tuple.right);
 
         /* Collections */
 
+        // List<E<L, R>> -> List<L>
         public static IEnumerable<L> ChooseLeft<L, R>(this IEnumerable<Either<L, R>> items) =>
             items.Where(x => x.LeftOrRight == LeftOrRight.Left).Select(x => x.LeftValue);
 
+        // List<E<L, R>> -> List<R>
         public static IEnumerable<R> ChooseRight<L, R>(this IEnumerable<Either<L, R>> items) =>
             items.Where(x => x.LeftOrRight == LeftOrRight.Right).Select(x => x.RightValue);
 
+        // List<E<L, R>> -> Option<List<L>>
         public static Option<IEnumerable<L>> SequenceLeft<L, R>(this IEnumerable<Either<L, R>> items) =>
-            items.Any(x => x.IsRight)
-                ? Option.Some(items.ChooseLeft())
-                : Option.None<IEnumerable<L>>();
+            items.Any(x => x.IsRight) ? Option.None<IEnumerable<L>>() : Option.Some(items.ChooseLeft());
 
+        // List<E<L, R>> -> Option<List<R>>
         public static Option<IEnumerable<R>> SequenceRight<L, R>(this IEnumerable<Either<L, R>> items) =>
-            items.Any(x => x.IsLeft)
-                ? Option.Some(items.ChooseRight())
-                : Option.None<IEnumerable<R>>();
-
+            items.Any(x => x.IsLeft) ? Option.None<IEnumerable<R>>() : Option.Some(items.ChooseRight());
 
     }
 }

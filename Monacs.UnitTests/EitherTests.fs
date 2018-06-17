@@ -125,4 +125,56 @@ module ``Side effects`` =
         let mutable output = ""
         Either.DoWhenRight(either, fun l -> output <- l.ToString()) |> ignore
         output |> should equal expected
+
+module Collections =
+
+    // Choose
+
+    [<Fact>]
+    let ``ChooseLeft<T> returns all items of type Either with Left value set`` () =
+        let items = seq { yield Either.ToEitherLeft(21); yield Either.ToEitherLeft(42); yield Either.ToEitherRight(63) }
+        let lefts = Either.ChooseLeft(items)
+        let expected = [| 21; 42 |]
+        lefts |> Seq.toArray |> should equal expected
         
+    [<Fact>]
+    let ``ChooseRight<T> returns all items of type Either with Right value set`` () =
+        let items = seq { yield Either.ToEitherRight(21); yield Either.ToEitherRight(42); yield Either.ToEitherLeft(63) }
+        let lefts = Either.ChooseRight(items)
+        let expected = [| 21; 42 |]
+        lefts |> Seq.toArray |> should equal expected
+
+
+    // Sequence
+
+    open System.Collections.Generic
+
+    [<Fact>]
+    let ``SequenceLeft<T> returns None if any item in collection has Right value set`` () =
+        let items = seq { yield Either.ToEitherLeft(21); yield Either.ToEitherRight(42) }
+        let lefts = Either.SequenceLeft(items)
+        let expected = Option.None<IEnumerable<int>>()
+        lefts |> should equal expected
+
+    
+    [<Fact>]
+    let ``SequenceLeft<T> returns Some<T> when all items in collection has Left value set`` () =
+        let items = seq { yield Either.ToEitherLeft(21) }
+        let lefts = Either.SequenceLeft(items)
+        lefts.IsSome |> should equal true
+        lefts.Value |> Seq.length |> should equal 1
+
+    [<Fact>]
+    let ``SequenceRight<T> returns None if any item in collection has Left value set`` () =
+        let items = seq { yield Either.ToEitherRight(21); yield Either.ToEitherLeft(42) }
+        let rights = Either.SequenceRight(items)
+        let expected = Option.None<IEnumerable<int>>()
+        rights |> should equal expected
+
+    
+    [<Fact>]
+    let ``SequenceRight<T> returns Some<T> when all items in collection has Right value set`` () =
+        let items = seq { yield Either.ToEitherRight(21) }
+        let lefts = Either.SequenceRight(items)
+        lefts.IsSome |> should equal true
+        lefts.Value |> Seq.length |> should equal 1
