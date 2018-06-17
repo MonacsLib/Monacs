@@ -4,8 +4,18 @@ using System.Linq;
 
 namespace Monacs.Core
 {
-    public readonly struct Either<L, R> : IEquatable<Either<L, R>>
+    public interface IEither
     {
+        LeftOrRight LeftOrRight { get; }
+        object Left { get; }
+        object Right { get; }
+    }
+
+    public readonly struct Either<L, R> : IEither, IEquatable<Either<L, R>>, IEquatable<IEither>
+    {
+        object IEither.Left => LeftValue;
+        object IEither.Right => RightValue;
+
         public L LeftValue { get; }
         public R RightValue { get; }
         public LeftOrRight LeftOrRight { get; }
@@ -27,10 +37,16 @@ namespace Monacs.Core
             && IsLeft ? EqualityComparer<L>.Default.Equals(LeftValue, other.LeftValue)
                       : EqualityComparer<R>.Default.Equals(RightValue, other.RightValue);
 
+        public bool Equals(IEither other) =>
+            !ReferenceEquals(null, other)
+            && LeftOrRight == other.LeftOrRight
+            && (other.Left != null && other.Left.Equals(LeftValue)
+                || other.Right != null && other.Right.Equals(RightValue));
+
         public override bool Equals(object obj) =>
             !ReferenceEquals(null, obj)
-            && obj is Either<L, R> either
-            && Equals(either);
+            && obj is IEither either && Equals(either)
+            || obj is Either<L, R> eitherGeneric && Equals(eitherGeneric);
 
         public override int GetHashCode()
         {

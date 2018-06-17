@@ -41,6 +41,13 @@ module ``Constructors and equality`` =
         let value = 42
         Either.Right(value) =  Either.Right(value) |> should equal true
         Either.Right(value) <> Either.Right(value) |> should equal false
+        
+    [<Fact>]
+    let ``Either<L, R> should be compared by values`` () =
+        let e1 = Either.Left<int, int>(42)
+        let e2 = Either.Left<obj, int>(42)
+        e1 |> should equal e2
+
 
     [<Fact>]
     let ``Either<L, R> doesn't equal Either<L, R> when the Left values are not equal`` ()  =
@@ -74,13 +81,13 @@ module Map =
 
     [<Fact>]
     let ``Maps left side when LeftValue is set`` () =
-        let either = Either.Left<int, int>(42) // We need to provider generic types explicitly as C# compiler takes type of `object` as default for not provided variable
-        let expected = Either.Left<int, int>(84)
+        let either = Either.Left(42)
+        let expected = Either.Left(84)
         Either.Map(either, mapLeft = (fun l -> l * 2), mapRight = (fun r -> r * 3)) |> should equal expected
 
     
     [<Fact>]
     let ``Maps right side when RightValue is set`` () =
-        let either = Either.Right<int, int>(42)
-        let expected = Either.Right<int, int>(126)
+        let either = Either.Right(42)
+        let expected = Either.Right(126)
         Either.Map(either, mapLeft = (fun l -> l * 2), mapRight = (fun r -> r * 3)) |> should equal expected
