@@ -45,8 +45,7 @@ namespace Monacs.Core
 
         public override bool Equals(object obj) =>
             !ReferenceEquals(null, obj)
-            && obj is IEither either && Equals(either)
-            || obj is Either<L, R> eitherGeneric && Equals(eitherGeneric);
+            && obj is IEither either && Equals(either);
 
         public override int GetHashCode()
         {
