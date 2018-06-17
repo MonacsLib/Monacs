@@ -96,6 +96,7 @@ namespace Monacs.Core
 
         /* Side effects */
 
+        // E<L, R> -> (L -> Unit) -> E<L, R>
         public static Either<L, R> DoWhenLeft<L, R>(this Either<L, R> either, Action<L> action)
         {
             if (either.IsLeft)

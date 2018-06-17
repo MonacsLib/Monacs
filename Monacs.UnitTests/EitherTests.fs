@@ -91,3 +91,38 @@ module Map =
         let either = Either.ToEitherRight(42)
         let expected = Either.ToEitherRight(126)
         Either.Map(either, mapLeft = (fun l -> l * 2), mapRight = (fun r -> r * 3)) |> should equal expected
+
+module ``Side effects`` =
+
+    [<Fact>]
+    let ``DoWhenLeft returns value and executes action when Left value is set`` () =
+        let either = Either.ToEitherLeft(42)
+        let expected = "42"
+        let mutable output = ""
+        Either.DoWhenLeft(either, fun l -> output <- l.ToString()) |> ignore
+        output |> should equal expected
+        
+    [<Fact>]
+    let ``DoWhenLeft returns value but does not execute action when Right value is set`` () =
+        let either = Either.ToEitherRight(42)
+        let expected = ""
+        let mutable output = ""
+        Either.DoWhenLeft(either, fun l -> output <- l.ToString()) |> ignore
+        output |> should equal expected
+        
+    [<Fact>]
+    let ``DoWhenRight returns value and executes action when Right value is set`` () =
+        let either = Either.ToEitherRight(42)
+        let expected = "42"
+        let mutable output = ""
+        Either.DoWhenRight(either, fun l -> output <- l.ToString()) |> ignore
+        output |> should equal expected
+        
+    [<Fact>]
+    let ``DoWhenRight returns value but does not execute action when Left value is set`` () =
+        let either = Either.ToEitherLeft(42)
+        let expected = ""
+        let mutable output = ""
+        Either.DoWhenRight(either, fun l -> output <- l.ToString()) |> ignore
+        output |> should equal expected
+        
