@@ -73,8 +73,8 @@ namespace Monacs.Core
         /* Bind */
 
         // E<L, R> -> (L -> LOut, R -> ROut) -> E<LOut, ROut>
-        public static Either<LOut, ROut> Bind<L, R, LOut, ROut>(this Either<L, R> either, Func<L, Either<LOut, ROut>> leftBinder, Func<R, Either<LOut, ROut>> rightBinder) =>
-            either.IsLeft ? leftBinder(either.LeftValue) : rightBinder(either.RightValue);
+        public static Either<LOut, ROut> Bind<L, R, LOut, ROut>(this Either<L, R> either, Func<L, Either<LOut, ROut>> left, Func<R, Either<LOut, ROut>> right) =>
+            either.IsLeft ? left(either.LeftValue) : right(either.RightValue);
 
 
         /* Side effects */
