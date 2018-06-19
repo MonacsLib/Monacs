@@ -74,16 +74,16 @@ module Map =
 
     [<Fact>]
     let ``Maps left side when LeftValue is set`` () =
-        let either = Either.ToEitherLeft(42)
-        let expected = Either.ToEitherLeft(84)
-        Either.Map(either, mapLeft = (fun l -> l * 2), mapRight = (fun r -> r * 3)) |> should equal expected
+        let either = Either.ToEitherLeft<int, int>(42)
+        let expected = Either.ToEitherLeft<int, int>(84)
+        Either.Map(either, left = (fun l -> l * 2), right = (fun r -> r * 3)) |> should equal expected
 
     
     [<Fact>]
     let ``Maps right side when RightValue is set`` () =
-        let either = Either.ToEitherRight(42)
-        let expected = Either.ToEitherRight(126)
-        Either.Map(either, mapLeft = (fun l -> l * 2), mapRight = (fun r -> r * 3)) |> should equal expected
+        let either = Either.ToEitherRight<int, int>(42)
+        let expected = Either.ToEitherRight<int, int>(126)
+        Either.Map(either, left = (fun l -> l * 2), right = (fun r -> r * 3)) |> should equal expected
 
 module ``Side effects`` =
 
