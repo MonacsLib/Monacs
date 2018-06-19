@@ -16,7 +16,7 @@ namespace Monacs.Core
 
         // E<L,R> -> (L -> LOut, R -> ROut) -> E<LOut, ROut>
         public static Either<TLeftOut, TRightOut> Map<TLeft, TRight, TLeftOut, TRightOut>(this Either<TLeft, TRight> either, Func<TLeft, TLeftOut> left, Func<TRight, TRightOut> right) =>
-            either.IsLeft ? ToEitherLeft<TLeftOut, TRightOut>(left(either.LeftValue)) : ToEitherRight<TLeftOut, TRightOut>(right(either.RightValue));
+            either.IsLeft ? Left<TLeftOut, TRightOut>(left(either.LeftValue)) : Right<TLeftOut, TRightOut>(right(either.RightValue));
 
         /* Bind */
 
@@ -48,14 +48,14 @@ namespace Monacs.Core
         /* Factories */
 
         // L -> E<L, R>
-        public static Either<TLeft, TRight> ToEitherLeft<TLeft, TRight>(this TLeft left) => new Either<TLeft, TRight>(left);
+        public static Either<TLeft, TRight> Left<TLeft, TRight>(TLeft left) => new Either<TLeft, TRight>(left);
 
         // R -> E<L, R>
-        public static Either<TLeft, TRight> ToEitherRight<TLeft, TRight>(this TRight right) => new Either<TLeft, TRight>(right);
+        public static Either<TLeft, TRight> Right<TLeft, TRight>(TRight right) => new Either<TLeft, TRight>(right);
 
         // (L, R) -> E<L, R>
-        public static Either<TLeft, TRight> ToEither<TLeft, TRight>(this (TLeft left, TRight right) tuple) =>
-            tuple.right == null ? ToEitherLeft<TLeft, TRight>(tuple.left) : ToEitherRight<TLeft, TRight>(tuple.right);
+        public static Either<TLeft, TRight> ToLeftOrRight<TLeft, TRight>((TLeft left, TRight right) tuple) =>
+            tuple.right == null ? Left<TLeft, TRight>(tuple.left) : Right<TLeft, TRight>(tuple.right);
 
         /* Collections */
 
