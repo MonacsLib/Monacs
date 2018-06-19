@@ -43,13 +43,6 @@ module ``Constructors and equality`` =
         Either.ToEitherRight(value) <> Either.ToEitherRight(value) |> should equal false
         
     [<Fact>]
-    let ``Either<L, R> should be compared by values`` () =
-        let e1 = Either.ToEitherLeft<int, int>(42)
-        let e2 = Either.ToEitherLeft<obj, int>(42)
-        e1 |> should equal e2
-
-
-    [<Fact>]
     let ``Either<L, R> doesn't equal Either<L, R> when the Left values are not equal`` ()  =
         Either.ToEitherLeft(42) =  Either.ToEitherLeft(52) |> should equal false
         Either.ToEitherLeft(42) <> Either.ToEitherLeft(52) |> should equal true

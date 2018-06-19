@@ -4,18 +4,8 @@ using System.Linq;
 
 namespace Monacs.Core
 {
-    public interface IEither
+    public readonly struct Either<L, R> : IEquatable<Either<L, R>>
     {
-        LeftOrRight LeftOrRight { get; }
-        object Left { get; }
-        object Right { get; }
-    }
-
-    public readonly struct Either<L, R> : IEither, IEquatable<Either<L, R>>, IEquatable<IEither>
-    {
-        object IEither.Left => LeftValue;
-        object IEither.Right => RightValue;
-
         public L LeftValue { get; }
         public R RightValue { get; }
         public LeftOrRight LeftOrRight { get; }
@@ -37,15 +27,9 @@ namespace Monacs.Core
             && IsLeft ? EqualityComparer<L>.Default.Equals(LeftValue, other.LeftValue)
                       : EqualityComparer<R>.Default.Equals(RightValue, other.RightValue);
 
-        public bool Equals(IEither other) =>
-            !ReferenceEquals(null, other)
-            && LeftOrRight == other.LeftOrRight
-            && (other.Left != null && other.Left.Equals(LeftValue)
-                || other.Right != null && other.Right.Equals(RightValue));
-
         public override bool Equals(object obj) =>
             !ReferenceEquals(null, obj)
-            && obj is IEither either && Equals(either);
+            && obj is Either<L, R> either && Equals(either);
 
         public override int GetHashCode()
         {
@@ -116,13 +100,13 @@ namespace Monacs.Core
         /* Factories */
 
         // L -> E<L, R>
-        public static Either<L, R> ToEitherLeft<L, R>(L left) => new Either<L, R>(left);
+        public static Either<L, R> ToEitherLeft<L, R>(this L left) => new Either<L, R>(left);
 
         // R -> E<L, R>
-        public static Either<L, R> ToEitherRight<L, R>(R right) => new Either<L, R>(right);
+        public static Either<L, R> ToEitherRight<L, R>(this R right) => new Either<L, R>(right);
 
         // (L, R) -> E<L, R>
-        public static Either<L, R> ToEither<L, R>((L left, R right) tuple) =>
+        public static Either<L, R> ToEither<L, R>(this (L left, R right) tuple) =>
             tuple.right == null ? ToEitherLeft<L, R>(tuple.left) : ToEitherRight<L, R>(tuple.right);
 
         /* Collections */
