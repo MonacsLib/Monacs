@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -6,6 +6,7 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EitherTests.fs" />
     <Compile Include="ErrorDetailsTests.fs" />
     <Compile Include="OptionTests.fs" />
     <Compile Include="ResultTests.fs" />
