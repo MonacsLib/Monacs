@@ -1,4 +1,4 @@
-name: Converted Workflow
+name: Build Monacs
 on:
   push:
     branches:
@@ -16,5 +16,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: dotnet build -c Release
-      - run: >-
-          dotnet test -c Release --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
+      - run: dotnet test -c Release --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
