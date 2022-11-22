@@ -15,5 +15,6 @@ jobs:
           - ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: dotnet --version
       - run: dotnet build -c Release
       - run: dotnet test -c Release --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
