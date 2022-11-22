@@ -6,11 +6,9 @@ It also encourages use of [Railway Oriented Programming](https://fsharpforfunand
 Monacs uses type and function names similar to F#. That's intentional and it should make potential transition to F# easier.
 Some people may prefer Haskell type names (e.g. Maybe instead of Option) or LINQ-like function naming (e.g. Select instead of Map) - if that's your preference, you can always fork this library and change the names accordingly :)
 
-[![Build Status](https://travis-ci.org/MonacsLib/Monacs.svg?branch=master)](https://travis-ci.org/MonacsLib/Monacs)
-
 ## Target platform and language versions
 
-Currently the library is build against .NET 4.6.1, .NET Standard 1.3 and  .NET Standard 2.0. To use the library you need to have .NET 4.6.1+ or .NET Core 1.0+ project with C# language version 6 or higher.
+Currently the library is build against .NET 4.6.1, .NET Standard 1.3 and .NET Standard 2.0. To use the library you need to have .NET 4.6.1+ or .NET Core 1.0+ project with C# language version 6 or higher.
 
 ## Documentation
 
