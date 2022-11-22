@@ -13,8 +13,16 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
+        dotnet-version: ['7.0.x']
     steps:
-      - uses: actions/checkout@v2
-      - run: dotnet --version
-      - run: dotnet build -c Release
-      - run: dotnet test -c Release --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Display dotnet version
+        run: dotnet --version
+      - name: Build in release
+        run: dotnet build -c Release
+      - name: Run unit tests
+        run: dotnet test -c Release --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
