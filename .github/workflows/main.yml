@@ -22,9 +22,9 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Display dotnet version
         run: dotnet --version
-      - name: Install dependencies
+      - name: Restore dependencies
         run: dotnet restore
-      - name: Build in release
-        run: dotnet build -c Release
+      - name: Build in Debug
+        run: dotnet build -c Debug
       - name: Run unit tests
-        run: dotnet test -c Release --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
+        run: dotnet test -c Debug --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj

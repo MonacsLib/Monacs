@@ -1,0 +1,25 @@
+name: Upload nuget package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    runs-on: windows-2019
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '2.1.818'
+          source-url: https://nuget.pkg.github.com/<owner>/index.json
+        env:
+          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+      - run: dotnet build Monacs.Core/Monacs.Core.csproj -c Release
+      - name: Create the package
+        run: dotnet pack Monacs.Core/Monacs.Core.csproj -c Release  -o . -v n
+      - name: Publish the package to GPR
+        #run: dotnet nuget push Monacs.Core.*.nupkg -k $NUGET_API_KEY -s https://www.nuget.org/api/v2/package
