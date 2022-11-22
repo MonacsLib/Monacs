@@ -21,5 +21,5 @@ jobs:
       - run: dotnet build Monacs.Core/Monacs.Core.csproj -c Release
       - name: Create the package
         run: dotnet pack Monacs.Core/Monacs.Core.csproj -c Release  -o . -v n
-      - name: Publish the package to GPR
-        #run: dotnet nuget push Monacs.Core.*.nupkg -k $NUGET_API_KEY -s https://www.nuget.org/api/v2/package
+      # - name: Publish the package to GPR
+      #   run: dotnet nuget push Monacs.Core.*.nupkg -k $NUGET_API_KEY -s https://www.nuget.org/api/v2/package
