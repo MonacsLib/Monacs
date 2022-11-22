@@ -1,4 +1,4 @@
-name: Upload nuget package
+name: Publish nuget package
 
 on:
   release:
@@ -7,9 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: windows-2019
-    permissions:
-      packages: write
-      contents: read
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
