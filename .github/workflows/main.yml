@@ -1,0 +1,30 @@
+name: Build Monacs
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: '${{ matrix.os }}'
+    strategy:
+      matrix:
+        os:
+          - windows-2019
+        dotnet-version: ['2.1.818']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Display dotnet version
+        run: dotnet --version
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build in Debug
+        run: dotnet build -c Debug
+      - name: Run unit tests
+        run: dotnet test -c Debug --no-build Monacs.UnitTests/Monacs.UnitTests.fsproj
